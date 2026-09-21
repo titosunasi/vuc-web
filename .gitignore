@@ -1,0 +1,6 @@
+# Zdrojové fotky v plnom rozlíšení – 231 MB, na web sa nenahrávajú.
+# Web verzie sú vyexportované v assets/.
+_PNG/
+
+# macOS
+.DS_Store

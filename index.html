@@ -1,0 +1,508 @@
+<!doctype html>
+<html lang="sk">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Deviati spoločne za jeden kraj — nezávislí kandidáti, okres Trenčín</title>
+<meta name="description" content="Deväť nezávislých kandidátov do Trenčianskeho samosprávneho kraja, okres Trenčín.">
+<meta name="theme-color" content="#F15A29">
+
+<meta property="og:type" content="website">
+<meta property="og:title" content="Deviati spoločne za jeden kraj">
+<meta property="og:description" content="Deväť nezávislých kandidátov do VÚC, okres Trenčín.">
+<meta property="og:image" content="assets/nahlad.jpg">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta name="twitter:card" content="summary_large_image">
+
+<link rel="stylesheet" href="https://use.typekit.net/sws3lvx.css">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=DM+Sans:opsz,wght@9..40,400;9..40,700&display=swap">
+
+<style>
+:root{
+  /* značková oranžová od klienta */
+  --orange:#F15A29;
+  --ink:#222121;
+  --cream:#FBEEE1;
+  --white:#fff;
+
+  --display:kensington, "Arial Narrow", sans-serif;
+  --script:filmotype-lucky, cursive;
+  --text:"DM Sans", -apple-system, sans-serif;
+
+  /* jedna škála medzier */
+  --s1:4px; --s2:8px; --s3:12px; --s4:16px;
+  --s5:24px; --s6:32px; --s7:48px; --s8:64px;
+
+  /* vnútorný okraj bloku – 7 % šírky, zmerané z plagátu */
+  --gutter:7%;
+  /* Jedna spoločná miera: headline, skupinová fotka aj biely pás.
+     Zodpovedá prirodzenej šírke prvého riadku pri 12,6 cqw. */
+  --measure:62.7%;
+}
+
+*{box-sizing:border-box}
+.vh{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+html{ -webkit-text-size-adjust:100% }
+@media (prefers-reduced-motion:no-preference){ html{ scroll-behavior:smooth } }
+body{
+  margin:0;
+  background:var(--orange);
+  color:var(--ink);
+  font-family:var(--text);
+  overflow-x:hidden;
+}
+
+/* oranžová nie je rám, je to papier – obsah do nej len zapustíme */
+.frame{ padding:clamp(12px, 2.6vw, 34px) }
+
+/* ---------- HERO ---------- */
+.hero{
+  position:relative; padding-bottom:6cqw;   /* fotka pokračuje pod ľuďmi */
+  container-type:inline-size;      /* písmo viažeme na šírku bloku, nie okna */
+  overflow:hidden;
+  background:#B9D6ED;      /* farba oblohy z hornej hrany fotky */
+  display:flex; flex-direction:column;   /* výška podľa obsahu – fotka ide až po pás */
+}
+.hero__bg{
+  position:absolute; inset:0;
+  background-image:url("assets/hrad-2400.webp");
+  /* Veža je na 45 % šírky fotky, medzera v headline na 58,4 % šírky bloku.
+     Pri 'cover' nemá fotka vodorovnú rezervu, tak ju nazoomujeme na 130 %
+     šírky bloku – tým sa poloha veže viaže na šírku bloku rovnako ako písmo. */
+  background-size:125% auto;
+  background-position:0% 14.4%;
+  background-repeat:no-repeat;
+}
+.hero__inner{
+  position:relative;
+  padding:0 var(--gutter);
+  display:flex; flex-direction:column;
+}
+
+/* čierny pás – výška 3,87 % šírky bloku, zmerané */
+.topbar{
+  margin-top:3.6cqw;
+  background:var(--ink);
+  color:var(--white);
+  font-family:var(--display);
+  font-weight:900;
+  font-size:1.78cqw;
+  letter-spacing:.02em;
+  text-transform:uppercase;
+  display:flex; justify-content:center; align-items:center;
+  gap:2cqw;
+  padding:.85cqw 1.6cqw;
+  white-space:nowrap;
+}
+.topbar span{ display:flex; align-items:center; gap:2cqw }
+.topbar span::after{ content:""; width:2.6cqw; height:.26cqw; background:currentColor }
+.topbar span:last-child::after{ display:none }
+
+/* vzduch medzi headlinom a ľuďmi – tu dýcha hrad */
+/* flex:1 – voľné miesto ide sem, nie pod ľudí (inak im od nich odletí pás) */
+.hero__gap{ flex:1 1 auto; height:6cqw }
+
+/* ľudia stoja vo fotke, nie pod ňou */
+/* Menšia a orezaná do polovice tela – v PDF im biely pás siaha
+   pod ruky, nohy vidieť nie sú. Výška = polovica výšky fotky. */
+.hero__people{
+  position:relative; display:block; width:var(--measure); margin:0 auto;
+  height:15cqw; overflow:hidden;
+}
+.hero__people img{ display:block; width:100%; height:auto }
+
+/* ---------- HEADLINE ---------- */
+/* Všetko odmerané z plagátu:
+   versálka = 12,88 % šírky bloku, riadok = 86 % šírky bloku,
+   rozstup riadkov = 13,6 % šírky bloku.
+   Font má versálku 0,745 em → veľkosť písma 17,3 cqw,
+   a plagát je o 10,2 % užší než prirodzený font → prestrkanie −0,035 em. */
+.hl{
+  margin:2.2cqw 0 0;
+  font-family:var(--display);
+  font-weight:900;
+  width:max-content; max-width:100%; margin-inline:auto;
+  font-size:12.6cqw;
+  line-height:.787;
+  letter-spacing:-.035em;
+  color:var(--orange);
+  text-transform:uppercase;
+}
+.hl__line{ display:block; white-space:nowrap }
+.hl__line--2{ display:flex; justify-content:space-between; width:100% }
+.hl__drift{ display:inline-block }
+.hl__in{ display:block }                              /* nábeh pri načítaní */
+
+@media (prefers-reduced-motion:no-preference){
+  .hl__in{ opacity:0 }
+  .is-ready .hl__in{ animation:slideIn .9s cubic-bezier(.22,.72,.26,1) both }
+  .is-ready .hl__line--1 .hl__in{ animation-delay:.20s; --from:-14% }
+  .is-ready .hl__word--a .hl__in{ animation-delay:.34s; --from:-22% }
+  .is-ready .hl__word--b .hl__in{ animation-delay:.46s; --from:22% }
+  @keyframes slideIn{
+    from{ opacity:0; transform:translate3d(var(--from),0,0) }
+    to  { opacity:1; transform:translate3d(0,0,0) }
+  }
+}
+
+/* pod 700 px medzera pre vežu nevyjde – headline zalomíme */
+
+/* ---------- DEVIATI: spoločná fotka + čísla ---------- */
+/* z-index musí byť – .hero__bg má will-change:transform, čím si vyrobí
+   vlastnú vrstvu a inak by kreslil nad hlavami */
+.team{ position:relative; z-index:2 }
+
+.team__list{
+  /* Pás nie je pod fotkou – sedí NA jej spodnej hrane a je široký
+     ako skupina ľudí, nie ako celá fotka. */
+  /* Pás je presne taký široký ako skupinová fotka a leží na jej spodnej
+     hrane. Každá položka je potom posunutá tak, aby číslo a meno sedeli
+     pod svojím človekom – polohy hláv sú odmerané z tej fotky. */
+  list-style:none; width:var(--measure); margin:-6cqw auto 0;
+  padding:var(--s3) 0;
+  background:var(--white); border-radius:clamp(10px,1.3vw,18px);
+  display:grid; grid-template-columns:repeat(9, minmax(0,1fr)); gap:var(--s4) 0;
+  position:relative;
+}
+.team__item{ text-align:center; display:flex; flex-direction:column; align-items:center; gap:var(--s2) }
+/* posun každej položky na svojho človeka (% šírky položky) */
+.team__item:nth-child(1){ --dx:22.3% }
+.team__item:nth-child(2){ --dx:8.9% }
+.team__item:nth-child(3){ --dx:10.8% }
+.team__item:nth-child(4){ --dx:14.0% }
+.team__item:nth-child(5){ --dx:4.7% }
+.team__item:nth-child(6){ --dx:-11.4% }
+.team__item:nth-child(7){ --dx:-23.3% }
+.team__item:nth-child(8){ --dx:-8.2% }
+.team__item:nth-child(9){ --dx:-15.2% }
+.team__item{ transform:translateX(var(--dx,0)) }
+
+.team__num{
+  font-family:var(--display); font-weight:900; font-size:clamp(14px,1.8vw,25px);
+  line-height:1; color:var(--white); background:var(--orange);
+  border-radius:6px; padding:.26em .40em .20em; min-width:1.9em;
+}
+.team__name{ line-height:1.05 }
+.team__fn{
+  display:block; font-family:var(--display); font-weight:700;
+  font-size:clamp(10px,0.95vw,14px); color:var(--ink); letter-spacing:.01em;
+}
+.team__sn{
+  display:block; font-family:var(--display); font-weight:900;
+  font-size:clamp(12px,1.26vw,18px); color:var(--orange);
+  text-transform:uppercase; letter-spacing:-.01em;
+}
+
+@media (max-width:900px){
+  /* 3×3 – tam sa pod ľudí zarovnať nedá, posun vypíname */
+  .team__list{ grid-template-columns:repeat(3, 1fr); gap:var(--s5) var(--s3);
+               width:auto; margin:-1px 0 0; padding:var(--s5) var(--s3) }
+  .team__item{ transform:none }
+}
+@media (max-width:560px){
+  /* deväť ľudí = 3×3, nie dva stĺpce s jedným visiacim */
+  .team__photo{ width:100% }
+  .team__list{ padding:var(--s5) var(--s2); gap:var(--s5) var(--s1) }
+}
+
+
+/* ---------- KARTY S VYJADRENIAMI ---------- */
+/* Portréty sú vyexportované na jednotný pomer 0,80 s osobou na plnú výšku,
+   takže fotku stačí viazať na VÝŠKU karty – presah 6,1 % potom sedí
+   na každej karte rovnako, nech je text akokoľvek dlhý. */
+.says{ margin-top:var(--s5); display:grid; grid-template-columns:repeat(2,1fr);
+       gap:var(--s5); container-type:inline-size }
+
+.say{
+  position:relative; background:var(--white); border-radius:var(--s6);
+  padding:var(--s5) var(--s5) var(--s5) 43%;
+  min-height:26cqw;          /* dve vedľa seba ako v PDF */
+  display:flex; align-items:center;
+  scroll-margin-top:var(--s5);
+}
+.say--right{ padding:var(--s5) 43% var(--s5) var(--s5) }
+
+/* Šírku drží plagát (37 % karty), výšku presah 6,1 %. Pomer sa tým
+   nezhoduje s pomerom fotky, tak ju orežeme po stranách – hlava zostáva hore. */
+.say__photo{ position:absolute; bottom:0; left:2%; width:37%; height:106.1%; overflow:hidden }
+.say--right .say__photo{ left:auto; right:2% }
+.say__photo img{ display:block; width:100%; height:100%; object-fit:cover; object-position:50% 0% }
+
+.say__body{ position:relative; width:100% }
+
+.say__quote{
+  margin:0; font-size:clamp(14px,1.15vw,17px); line-height:1.42;
+  color:var(--ink); position:relative; z-index:1;
+}
+.say__quote b{ color:var(--orange); font-weight:700 }
+
+.say__mark{
+  position:absolute; font-family:var(--text); font-weight:700;
+  color:var(--cream); line-height:1; z-index:0; pointer-events:none; user-select:none;
+  font-size:clamp(70px,6vw,100px);
+}
+.say__mark--a{ top:-.22em; left:-.12em }
+.say__mark--b{ right:-.06em; bottom:-.30em }
+
+.say__name{ margin:var(--s4) 0 0; font-family:var(--script); line-height:1.02; text-align:right }
+.say--right .say__name{ text-align:left }
+.say__fn{ display:block; font-size:clamp(17px,1.6vw,23px); color:var(--ink) }
+.say__sn{ display:block; font-size:clamp(20px,2.0vw,29px); color:var(--orange); text-transform:uppercase }
+
+/* objavenie pri scrolle */
+@media (prefers-reduced-motion:no-preference){
+  [data-reveal]{ opacity:0; transform:translate3d(0,24px,0) }
+  [data-reveal].in{
+    opacity:1; transform:none;
+    transition:opacity .6s ease var(--d,0ms), transform .6s cubic-bezier(.22,.7,.3,1) var(--d,0ms);
+  }
+}
+@media (hover:hover) and (prefers-reduced-motion:no-preference){
+  .say{ transition:transform .35s cubic-bezier(.22,.7,.3,1), box-shadow .35s ease }
+  .say:hover{ transform:translateY(-8px) scale(1.01); box-shadow:0 18px 40px rgba(0,0,0,.18) }
+}
+
+@media (max-width:860px){
+  .says{ grid-template-columns:1fr }
+  .say, .say--right{ padding:0 var(--s5) var(--s5); text-align:center;
+                     min-height:0; display:block }
+  .say__photo{ position:relative; left:auto; right:auto; height:auto;
+               width:46%; margin:-9% auto 0; display:block; overflow:visible }
+  .say--right .say__photo{ right:auto }
+  .say__photo img{ width:100%; height:auto; object-fit:fill }
+  .say__body{ margin-top:var(--s4) }
+  .say__quote{ text-align:left }
+  .say__name, .say--right .say__name{ text-align:center }
+  .say__mark{ font-size:80px }
+}
+
+/* mená v pásme, ktoré vedú na kartu */
+.team__link{ text-decoration:none; color:inherit; display:block; border-radius:10px }
+.team__link:focus-visible{ outline:3px solid var(--ink); outline-offset:3px }
+@media (hover:hover){
+  .team__link{ transition:transform .2s ease }
+  .team__link:hover{ transform:translateY(-3px) }
+  .team__link:hover .team__sn{ text-decoration:underline; text-underline-offset:3px }
+}
+
+
+/* ---------- PÄTIČKA ---------- */
+.foot{
+  margin-top:var(--s6); padding:var(--s5) var(--s4) var(--s3);
+  text-align:center; color:var(--ink);
+  font-size:clamp(11px,1vw,13px); line-height:1.5;
+}
+.foot p{ margin:0 0 var(--s2) }
+.foot b{ font-weight:700 }
+.foot__note{ opacity:.72 }
+
+@media (max-width:700px){
+  .frame{ padding:12px }
+
+
+  /* Pri úzkom okne sa fotka roztiahnutá na výšku dostala hradom pod text.
+     Preto ju kotvíme na spodok v prirodzenom pomere a nad ňou necháme oblohu
+     – tá farba je odobratá z hornej hrany fotky, takže prechod nie je vidieť. */
+  .hero__bg{
+    /* Fotka dole v prirodzenom pomere, nad ňou obloha.
+       Obloha nie je farba ani prechod – je to 2 px vysoký výrez
+       skutočného horného riadku tej istej WebP, roztiahnutý na výšku.
+       Preto na hrane sedí na pixel a šev tam nie je. */
+    background-image:
+      url("assets/hrad-1400.webp"),
+      url("assets/obloha.webp");
+    background-size:100% auto, 100% 100%;
+    background-position:50% 100%, 0 0;
+    background-repeat:no-repeat, no-repeat;
+  }
+
+  /* headline zostáva dvojriadkový ako na plagáte, len bez medzery pre vežu */
+  .hl{ line-height:.84 }
+  .hl__line--2{ display:block }
+
+  /* 4 položky sa do riadku nezmestia – dva čisté riadky bez visiacej čiarky */
+  .topbar{
+    display:grid; grid-template-columns:auto auto;
+    justify-content:center; align-items:center;
+    gap:5px 8px; padding:8px; margin-top:12px;
+    font-size:10.5px; white-space:nowrap;
+  }
+  .topbar span{ gap:8px }
+  .topbar span::after{ width:11px; height:1.5px }
+  .topbar span:nth-child(2)::after{ display:none }
+}
+
+/* Na telefóne na výšku sa medzera pre vežu ZMESTÍ – zmerané: 21,5 % šírky
+   bloku, na plagáte 21,1 %. Blok má pevný pomer 1:1,5, takže zoom fotky
+   (181 %) aj poloha veže (31,1 %) platia na každej šírke rovnako. */
+@media (max-width:700px) and (orientation:portrait){
+  .hero{ height:102vw }
+  /* zoom 146 % je najmenší, pri ktorom fotka pokryje celú výšku bloku;
+     poloha 19,5 % posadí vežu do medzery */
+  .hero__bg{
+    background-image:url("assets/hrad-1400.webp");
+    background-size:146% auto;
+    background-position:19.5% 0%;
+  }
+  .hl__line--2{ display:flex; justify-content:space-between; width:100% }
+}
+</style>
+</head>
+<body>
+
+<div class="frame">
+  <header class="hero">
+    <div class="hero__bg" id="bg"></div>
+    <div class="hero__inner">
+
+      <nav class="topbar">
+        <span>Voľby do VÚC</span>
+        <span>24. október 2026</span>
+        <span>Nezávislí kandidáti</span>
+        <span>Okres Trenčín</span>
+      </nav>
+
+      <h1 class="hl">
+        <span class="hl__line hl__line--1">
+          <span class="hl__drift"><span class="hl__in">Deviati spoločne</span></span>
+        </span>
+        <span class="hl__line hl__line--2">
+          <span class="hl__word--a"><span class="hl__drift"><span class="hl__in">Za jeden</span></span></span>
+          <span class="hl__word--b"><span class="hl__drift"><span class="hl__in">Kraj</span></span></span>
+        </span>
+      </h1>
+
+    </div>
+
+    <div class="hero__gap" aria-hidden="true"></div>
+
+    <div class="hero__people">
+      <img src="assets/spolocna-2000.webp" width="2000" height="958"
+           alt="Deväť nezávislých kandidátov do Trenčianskeho samosprávneho kraja za okres Trenčín">
+    </div>
+  </header>
+
+  <section class="team" id="kandidati" aria-labelledby="kandidati-nadpis">
+    <h2 id="kandidati-nadpis" class="vh">Deväť kandidátov do Trenčianskeho samosprávneho kraja</h2>
+    <ol class="team__list">
+        <li class="team__item">
+          <span class="team__num">02</span>
+          <span class="team__name"><span class="team__fn">Martin</span><span class="team__sn">Barčák</span></span>
+        </li>
+        <li class="team__item">
+          <span class="team__num">03</span>
+          <a class="team__link" href="#benovicova"><span class="team__name"><span class="team__fn">Martina</span><span class="team__sn">Beňovičová</span></span></a>
+        </li>
+        <li class="team__item">
+          <span class="team__num">13</span>
+          <span class="team__name"><span class="team__fn">Ľubomír</span><span class="team__sn">Horný</span></span>
+        </li>
+        <li class="team__item">
+          <span class="team__num">15</span>
+          <a class="team__link" href="#huserka"><span class="team__name"><span class="team__fn">Juraj</span><span class="team__sn">Húserka</span></span></a>
+        </li>
+        <li class="team__item">
+          <span class="team__num">31</span>
+          <a class="team__link" href="#misakova"><span class="team__name"><span class="team__fn">Zuzana</span><span class="team__sn">Mišáková</span></span></a>
+        </li>
+        <li class="team__item">
+          <span class="team__num">40</span>
+          <span class="team__name"><span class="team__fn">Martin</span><span class="team__sn">Smolka</span></span>
+        </li>
+        <li class="team__item">
+          <span class="team__num">46</span>
+          <span class="team__name"><span class="team__fn">Róbert</span><span class="team__sn">Švehla</span></span>
+        </li>
+        <li class="team__item">
+          <span class="team__num">48</span>
+          <a class="team__link" href="#vano"><span class="team__name"><span class="team__fn">Tomáš</span><span class="team__sn">Vaňo</span></span></a>
+        </li>
+        <li class="team__item">
+          <span class="team__num">51</span>
+          <span class="team__name"><span class="team__fn">Patrik</span><span class="team__sn">Žák</span></span>
+        </li>
+    </ol>
+  </section>
+
+  <section class="says" aria-labelledby="vyjadrenia-nadpis">
+    <h2 id="vyjadrenia-nadpis" class="vh">Čo hovoria kandidáti</h2>
+      <article class="say" id="huserka" data-reveal>
+        <div class="say__photo">
+          <img src="assets/huserka.webp" width="1056" height="1200" loading="lazy" alt="Juraj Húserka">
+        </div>
+        <div class="say__body">
+          <span class="say__mark say__mark--a" aria-hidden="true">&rdquo;</span>
+          <span class="say__mark say__mark--b" aria-hidden="true">&ldquo;</span>
+          <blockquote class="say__quote">Ako starosta obce Horné Srnie vnímam, že rozvoj regiónu stojí na úzkej spolupráci obcí a kraja. <b>V krajských voľbách máte v rukách možnosť zakrúžkovať až 9 kandidátov. Využite túto šancu naplno.</b></blockquote>
+          <p class="say__name"><span class="say__fn">Juraj</span><span class="say__sn">Húserka</span></p>
+        </div>
+      </article>
+      <article class="say say--right" id="benovicova" data-reveal>
+        <div class="say__photo">
+          <img src="assets/benovicova.webp" width="1056" height="1200" loading="lazy" alt="Martina Beňovičová">
+        </div>
+        <div class="say__body">
+          <span class="say__mark say__mark--a" aria-hidden="true">&rdquo;</span>
+          <span class="say__mark say__mark--b" aria-hidden="true">&ldquo;</span>
+          <blockquote class="say__quote">Keď spojím rolu mamy, knihovníčky a cukrárky, viem, že tie najlepšie veci potrebujú starostlivosť, skúsenosť a poctivé ingrediencie. <b>Náš kraj si zaslúži dobré rozhodnutia postavené na pevných základoch.</b></blockquote>
+          <p class="say__name"><span class="say__fn">Martina</span><span class="say__sn">Beňovičová</span></p>
+        </div>
+      </article>
+      <article class="say" id="misakova" data-reveal>
+        <div class="say__photo">
+          <img src="assets/misakova.webp" width="1056" height="1200" loading="lazy" alt="Zuzana Mišáková">
+        </div>
+        <div class="say__body">
+          <span class="say__mark say__mark--a" aria-hidden="true">&rdquo;</span>
+          <span class="say__mark say__mark--b" aria-hidden="true">&ldquo;</span>
+          <blockquote class="say__quote">V politike sa riadim rozumom, ale aj svedomím. Verím, že verejný život potrebuje kultúru a ľudskosť. <b>Využite každý svoj hlas a zvoľte si tím krajských poslancov, na ktorý sa môžete spoľahnúť.</b></blockquote>
+          <p class="say__name"><span class="say__fn">Zuzana</span><span class="say__sn">Mišáková</span></p>
+        </div>
+      </article>
+      <article class="say say--right" id="vano" data-reveal>
+        <div class="say__photo">
+          <img src="assets/vano.webp" width="1056" height="1200" loading="lazy" alt="Tomáš Vaňo">
+        </div>
+        <div class="say__body">
+          <span class="say__mark say__mark--a" aria-hidden="true">&rdquo;</span>
+          <span class="say__mark say__mark--b" aria-hidden="true">&ldquo;</span>
+          <blockquote class="say__quote">Som poslanec Trenčianskeho samosprávneho kraja a dôverne poznám, ako funguje krajská politika, a viem, že človek nemôže bojovať sám. <b>Skutočné výsledky vznikajú len vtedy, keď ťaháme za jeden povraz.</b></blockquote>
+          <p class="say__name"><span class="say__fn">Tomáš</span><span class="say__sn">Vaňo</span></p>
+        </div>
+      </article>
+  </section>
+
+  <footer class="foot">
+    <p><b>Objednávateľ a dodávateľ:</b> Patrik Žák, K. Šmidkeho 7, 911 08 Trenčín</p>
+    <p class="foot__note">IČO: —</p>
+  </footer>
+</div>
+
+<script>
+(function(){
+  document.body.classList.add('is-ready');
+
+  /* Hrad zámerne nehýbe – preto nehýbe ani headline.
+     Keby driftoval headline a hrad nie, veža by z medzery ušla. */
+
+  /* karty a deviati sa objavia, keď na ne prídeš */
+  if (!matchMedia('(prefers-reduced-motion: reduce)').matches && 'IntersectionObserver' in window){
+    var io = new IntersectionObserver(function(entries){
+      entries.forEach(function(e){
+        if (e.isIntersecting){ e.target.classList.add('in'); io.unobserve(e.target); }
+      });
+    }, {rootMargin:'0px 0px -12% 0px'});
+    document.querySelectorAll('[data-reveal]').forEach(function(el, i){
+      el.style.setProperty('--d', (i % 4) * 80 + 'ms');
+      io.observe(el);
+    });
+  } else {
+    document.querySelectorAll('[data-reveal]').forEach(function(el){ el.classList.add('in'); });
+  }
+})();
+</script>
+
+</body>
+</html>
