@@ -59,9 +59,8 @@ body{
 
 /* ---------- HERO ---------- */
 .hero{
-  position:relative; padding-bottom:6cqw;   /* fotka pokračuje pod ľuďmi */
+  position:relative;
   container-type:inline-size;      /* písmo viažeme na šírku bloku, nie okna */
-  overflow:hidden;
   background:#B9D6ED;      /* farba oblohy z hornej hrany fotky */
   display:flex; flex-direction:column;   /* výška podľa obsahu – fotka ide až po pás */
 }
@@ -83,21 +82,25 @@ body{
 
 /* čierny pás – výška 3,87 % šírky bloku, zmerané */
 .topbar{
-  margin-top:3.6cqw;
+  /* šírka ako headline, a leží presne na hornej hrane fotky –
+     polovicou na oranžovom okraji, polovicou na fotke */
+  width:var(--measure); margin:0 auto;
+  position:relative; z-index:3;
+  transform:translateY(-50%);
   background:var(--ink);
   color:var(--white);
   font-family:var(--display);
   font-weight:900;
   font-size:1.78cqw;
-  letter-spacing:.02em;
+  letter-spacing:.005em;
   text-transform:uppercase;
   display:flex; justify-content:center; align-items:center;
-  gap:2cqw;
-  padding:.85cqw 1.6cqw;
+  gap:1.15cqw;
+  padding:.8cqw 1.5cqw;
   white-space:nowrap;
 }
-.topbar span{ display:flex; align-items:center; gap:2cqw }
-.topbar span::after{ content:""; width:2.6cqw; height:.26cqw; background:currentColor }
+.topbar span{ display:flex; align-items:center; gap:1.15cqw }
+.topbar span::after{ content:""; width:1.9cqw; height:.24cqw; background:currentColor }
 .topbar span:last-child::after{ display:none }
 
 /* vzduch medzi headlinom a ľuďmi – tu dýcha hrad */
@@ -109,7 +112,9 @@ body{
    pod ruky, nohy vidieť nie sú. Výška = polovica výšky fotky. */
 .hero__people{
   position:relative; display:block; width:var(--measure); margin:0 auto;
-  height:15cqw; overflow:hidden;
+  /* o 3,9 cqw vyššie, než je vidieť – ten kus schová biely pás,
+     takže rez nikdy nevykukne */
+  height:18.9cqw; overflow:hidden;
 }
 .hero__people img{ display:block; width:100%; height:auto }
 
@@ -120,7 +125,7 @@ body{
    Font má versálku 0,745 em → veľkosť písma 17,3 cqw,
    a plagát je o 10,2 % užší než prirodzený font → prestrkanie −0,035 em. */
 .hl{
-  margin:2.2cqw 0 0;
+  margin:-0.6cqw 0 0;
   font-family:var(--display);
   font-weight:900;
   width:max-content; max-width:100%; margin-inline:auto;
@@ -160,34 +165,24 @@ body{
   /* Pás je presne taký široký ako skupinová fotka a leží na jej spodnej
      hrane. Každá položka je potom posunutá tak, aby číslo a meno sedeli
      pod svojím človekom – polohy hláv sú odmerané z tej fotky. */
-  list-style:none; width:var(--measure); margin:-6cqw auto 0;
-  padding:var(--s3) 0;
+  list-style:none; width:var(--measure); margin:-3.9cqw auto 0;
+  padding:var(--s3) clamp(18px, 3.44vw, 52px);  /* odmerané: pri tejto hodnote sadnú čísla najbližšie k ľuďom */
   background:var(--white); border-radius:clamp(10px,1.3vw,18px);
-  display:grid; grid-template-columns:repeat(9, minmax(0,1fr)); gap:var(--s4) 0;
+  display:flex; justify-content:space-between; align-items:flex-start; gap:var(--s3);
   position:relative;
 }
-.team__item{ text-align:center; display:flex; flex-direction:column; align-items:center; gap:var(--s2) }
-/* posun každej položky na svojho človeka (% šírky položky) */
-.team__item:nth-child(1){ --dx:22.3% }
-.team__item:nth-child(2){ --dx:8.9% }
-.team__item:nth-child(3){ --dx:10.8% }
-.team__item:nth-child(4){ --dx:14.0% }
-.team__item:nth-child(5){ --dx:4.7% }
-.team__item:nth-child(6){ --dx:-11.4% }
-.team__item:nth-child(7){ --dx:-23.3% }
-.team__item:nth-child(8){ --dx:-8.2% }
-.team__item:nth-child(9){ --dx:-15.2% }
-.team__item{ transform:translateX(var(--dx,0)) }
+.team__item{ text-align:left; display:flex; flex-direction:column; align-items:flex-start; gap:var(--s2) }
 
 .team__num{
   font-family:var(--display); font-weight:900; font-size:clamp(14px,1.8vw,25px);
   line-height:1; color:var(--white); background:var(--orange);
-  border-radius:6px; padding:.26em .40em .20em; min-width:1.9em;
+  border-radius:6px; width:1.52em; aspect-ratio:1;    /* štvorec, nie obdĺžnik */
+  display:grid; place-items:center; padding:0 0 .06em;
 }
 .team__name{ line-height:1.05 }
 .team__fn{
   display:block; font-family:var(--display); font-weight:700;
-  font-size:clamp(10px,0.95vw,14px); color:var(--ink); letter-spacing:.01em;
+  font-size:clamp(12px,1.26vw,18px); color:var(--ink); letter-spacing:.01em;
 }
 .team__sn{
   display:block; font-family:var(--display); font-weight:900;
@@ -195,10 +190,12 @@ body{
   text-transform:uppercase; letter-spacing:-.01em;
 }
 
-@media (max-width:900px){
+@media (max-width:1150px){
   /* 3×3 – tam sa pod ľudí zarovnať nedá, posun vypíname */
-  .team__list{ grid-template-columns:repeat(3, 1fr); gap:var(--s5) var(--s3);
+  .team__list{ display:grid; grid-template-columns:repeat(3, 1fr);
+               gap:var(--s5) var(--s3); justify-content:stretch;
                width:auto; margin:-1px 0 0; padding:var(--s5) var(--s3) }
+  .team__item{ align-items:center; text-align:center }
   .team__item{ transform:none }
 }
 @media (max-width:560px){
@@ -217,18 +214,19 @@ body{
 
 .say{
   position:relative; background:var(--white); border-radius:var(--s6);
-  padding:var(--s5) var(--s5) var(--s5) 43%;
-  min-height:26cqw;          /* dve vedľa seba ako v PDF */
+  padding:var(--s5) var(--s5) var(--s5) 46%;
+  min-height:19cqw;          /* menej prázdna na to, koľko je textu */
   display:flex; align-items:center;
   scroll-margin-top:var(--s5);
 }
-.say--right{ padding:var(--s5) 43% var(--s5) var(--s5) }
+.say--right{ padding:var(--s5) 46% var(--s5) var(--s5) }
 
-/* Šírku drží plagát (37 % karty), výšku presah 6,1 %. Pomer sa tým
-   nezhoduje s pomerom fotky, tak ju orežeme po stranách – hlava zostáva hore. */
-.say__photo{ position:absolute; bottom:0; left:2%; width:37%; height:106.1%; overflow:hidden }
-.say--right .say__photo{ left:auto; right:2% }
-.say__photo img{ display:block; width:100%; height:100%; object-fit:cover; object-position:50% 0% }
+/* Fotka sa nikde neoreže: šírku zadáme, výška ide sama podľa pomeru
+   obrázka. Preto nie je z jednej strany useknutá a z druhej nie. */
+.say__photo{ position:absolute; bottom:0; left:2.5%; width:40%; height:auto;
+             overflow:hidden; border-radius:var(--s5) }
+.say--right .say__photo{ left:auto; right:2.5% }
+.say__photo img{ display:block; width:100%; height:auto }
 
 .say__body{ position:relative; width:100% }
 
@@ -246,7 +244,8 @@ body{
 .say__mark--a{ top:-.22em; left:-.12em }
 .say__mark--b{ right:-.06em; bottom:-.30em }
 
-.say__name{ margin:var(--s4) 0 0; font-family:var(--script); line-height:1.02; text-align:right }
+.say__name{ position:relative; z-index:1;   /* nad úvodzovkami, nie pod nimi */
+  margin:var(--s4) 0 0; font-family:var(--script); line-height:1.02; text-align:right }
 .say--right .say__name{ text-align:left }
 .say__fn{ display:block; font-size:clamp(17px,1.6vw,23px); color:var(--ink) }
 .say__sn{ display:block; font-size:clamp(20px,2.0vw,29px); color:var(--orange); text-transform:uppercase }
@@ -355,14 +354,14 @@ body{
 <div class="frame">
   <header class="hero">
     <div class="hero__bg" id="bg"></div>
-    <div class="hero__inner">
-
-      <nav class="topbar">
+    <nav class="topbar">
         <span>Voľby do VÚC</span>
         <span>24. október 2026</span>
         <span>Nezávislí kandidáti</span>
-        <span>Okres Trenčín</span>
-      </nav>
+      <span>Okres Trenčín</span>
+    </nav>
+
+    <div class="hero__inner">
 
       <h1 class="hl">
         <span class="hl__line hl__line--1">
@@ -430,7 +429,7 @@ body{
     <h2 id="vyjadrenia-nadpis" class="vh">Čo hovoria kandidáti</h2>
       <article class="say" id="huserka" data-reveal>
         <div class="say__photo">
-          <img src="assets/huserka.webp" width="1056" height="1200" loading="lazy" alt="Juraj Húserka">
+          <img src="assets/huserka.webp" width="1008" height="900" loading="lazy" alt="Juraj Húserka">
         </div>
         <div class="say__body">
           <span class="say__mark say__mark--a" aria-hidden="true">&rdquo;</span>
@@ -441,7 +440,7 @@ body{
       </article>
       <article class="say say--right" id="benovicova" data-reveal>
         <div class="say__photo">
-          <img src="assets/benovicova.webp" width="1056" height="1200" loading="lazy" alt="Martina Beňovičová">
+          <img src="assets/benovicova.webp" width="1008" height="900" loading="lazy" alt="Martina Beňovičová">
         </div>
         <div class="say__body">
           <span class="say__mark say__mark--a" aria-hidden="true">&rdquo;</span>
@@ -452,7 +451,7 @@ body{
       </article>
       <article class="say" id="misakova" data-reveal>
         <div class="say__photo">
-          <img src="assets/misakova.webp" width="1056" height="1200" loading="lazy" alt="Zuzana Mišáková">
+          <img src="assets/misakova.webp" width="1008" height="900" loading="lazy" alt="Zuzana Mišáková">
         </div>
         <div class="say__body">
           <span class="say__mark say__mark--a" aria-hidden="true">&rdquo;</span>
@@ -463,7 +462,7 @@ body{
       </article>
       <article class="say say--right" id="vano" data-reveal>
         <div class="say__photo">
-          <img src="assets/vano.webp" width="1056" height="1200" loading="lazy" alt="Tomáš Vaňo">
+          <img src="assets/vano.webp" width="1008" height="900" loading="lazy" alt="Tomáš Vaňo">
         </div>
         <div class="say__body">
           <span class="say__mark say__mark--a" aria-hidden="true">&rdquo;</span>
