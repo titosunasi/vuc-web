@@ -80,27 +80,42 @@ body{
   display:flex; flex-direction:column;
 }
 
-/* čierny pás – výška 3,87 % šírky bloku, zmerané */
+/* ČIERNY PÁS
+   Všetko odmerané z referencie (obrázok 1650×112):
+     pás 78 px, inkúst písma 62 px  → inkúst = 79,5 % výšky pásu
+     čierne nad písmom 4 px, pod 12 px
+     text vyplní 98,1 % šírky pásu, bočne 14 / 16 px
+     oddeľovač 79 px celkom, z toho čiarka 64 px a medzery po 7,5 px
+   Prepočítané na veľkosť písma F (font má inkúst 0,945 F a pri
+   line-height:1 trčí 0,034 F nad box a má 0,089 F rezervy pod pätou):
+     padding .096em zhora aj zdola → pás 1,192 F, inkúst 79,3 % (referencia 79,5)
+     medzera .12em, čiarka 1em, bočne .24em
+   Text aj s oddeľovačmi meria 24,686 em, s bočným odsadením 25,165 em.
+   Preto F = šírka pásu / 25,165 – vtedy text pás presne vyplní. */
 .topbar{
-  /* šírka ako headline, a leží presne na hornej hrane fotky –
-     polovicou na oranžovom okraji, polovicou na fotke */
-  width:var(--measure); margin:0 auto;
+  /* Šírka ako headline, ale nikdy nie taká úzka, aby sa písmo zdrblo:
+     na telefóne sa pás roztiahne na celú šírku. Prechod je plynulý,
+     nie skokom – preto tu nie je žiadna mobilná výnimka. */
+  width:max(var(--measure), min(100%, 360px));
+  margin:0 auto;
   position:relative; z-index:3;
   transform:translateY(-50%);
   background:var(--ink);
   color:var(--white);
   font-family:var(--display);
   font-weight:900;
-  font-size:1.78cqw;
-  letter-spacing:.005em;
+  /* to isté ako šírka pásu delená 25,165 */
+  font-size:max(2.49cqw, min(3.97cqw, 14.3px));
+  line-height:1;
+  letter-spacing:0;
   text-transform:uppercase;
   display:flex; justify-content:center; align-items:center;
-  gap:1.15cqw;
-  padding:.8cqw 1.5cqw;
+  gap:.12em;
+  padding:.096em .24em;
   white-space:nowrap;
 }
-.topbar span{ display:flex; align-items:center; gap:1.15cqw }
-.topbar span::after{ content:""; width:1.9cqw; height:.24cqw; background:currentColor }
+.topbar span{ display:flex; align-items:center; gap:.12em }
+.topbar span::after{ content:""; width:1em; height:max(1px,.045em); background:currentColor }
 .topbar span:last-child::after{ display:none }
 
 /* vzduch medzi headlinom a ľuďmi – tu dýcha hrad */
@@ -190,18 +205,37 @@ body{
   text-transform:uppercase; letter-spacing:-.01em;
 }
 
+/* Pod 1150 px by sa deväť mien do pásu širokého 62,7 % ešte vošlo,
+   ale len tesne – pri 720 px zostávajú štyri pixely rezervy. Preto radšej
+   od 1150 px roztiahneme fotku aj pás na celú šírku. Oboje rovnako,
+   takže pomer medzi ľuďmi a menami zostáva a mená im sedia pod nohami.
+   Bočné odsadenie je preto v %, nie v px: 5,1 % je tá istá hodnota,
+   ktorá vyšla z merania zarovnania na desktope. */
 @media (max-width:1150px){
-  /* 3×3 – tam sa pod ľudí zarovnať nedá, posun vypíname */
-  .team__list{ display:grid; grid-template-columns:repeat(3, 1fr);
-               gap:var(--s5) var(--s3); justify-content:stretch;
-               width:auto; margin:-1px 0 0; padding:var(--s5) var(--s3) }
-  .team__item{ align-items:center; text-align:center }
-  .team__item{ transform:none }
+  .team{ container-type:inline-size }   /* aby cqw bolo naozaj šírka pásu */
+
+  .hero__people{
+    width:100%;
+    /* prirodzená výška fotky pri plnej šírke je 47,9 cqw;
+       ukazujeme z nej 63 % – rovnaký rez po pás ako na desktope */
+    height:30.2cqw;
+  }
+
+  .team__list{
+    width:100%; margin:-6.25cqw 0 0;   /* pás leží na 50 % výšky fotky */
+    padding:var(--s4) 5.1%;
+    gap:var(--s2);
+  }
+  .team__fn, .team__sn{ white-space:nowrap }
 }
-@media (max-width:560px){
-  /* deväť ľudí = 3×3, nie dva stĺpce s jedným visiacim */
-  .team__photo{ width:100% }
-  .team__list{ padding:var(--s5) var(--s2); gap:var(--s5) var(--s1) }
+
+/* Až na telefóne deväť mien do radu naozaj nejde – tam 3×3. */
+@media (max-width:660px){
+  .team__list{
+    display:grid; grid-template-columns:repeat(3, minmax(0,1fr));
+    gap:var(--s4) var(--s2); padding:var(--s4) var(--s3);
+  }
+  .team__item{ align-items:center; text-align:center }
 }
 
 
@@ -265,16 +299,33 @@ body{
 
 @media (max-width:860px){
   .says{ grid-template-columns:1fr }
-  .say, .say--right{ padding:0 var(--s5) var(--s5); text-align:center;
-                     min-height:0; display:block }
-  .say__photo{ position:relative; left:auto; right:auto; height:auto;
-               width:46%; margin:-9% auto 0; display:block; overflow:visible }
-  .say--right .say__photo{ right:auto }
-  .say__photo img{ width:100%; height:auto; object-fit:fill }
-  .say__body{ margin-top:var(--s4) }
-  .say__quote{ text-align:left }
-  .say__name, .say--right .say__name{ text-align:center }
-  .say__mark{ font-size:80px }
+
+  /* Na mobile je karta mriežka: citát cez celú šírku, pod ním fotka vľavo
+     a podpis vpravo. Fotka tak stojí na spodnej hrane karty presne ako na
+     desktope – plochý strih torza už nevisí uprostred bielej plochy. */
+  .say, .say--right{
+    display:grid; grid-template-columns:46% 1fr;
+    grid-template-areas:"citat citat" "fotka meno";
+    align-items:end; column-gap:var(--s3); row-gap:var(--s4);
+    padding:var(--s5) var(--s5) 0; min-height:0;
+    overflow:hidden;            /* zaoblenie karty oreže spodok fotky */
+    text-align:left;
+  }
+  /* aby sa citát, meno aj fotka stali políčkami tej istej mriežky */
+  .say__body{ display:contents }
+
+  .say__quote{ grid-area:citat; text-align:left }
+
+  .say__photo{ grid-area:fotka; position:static; width:100%; height:auto;
+               margin:0 0 0 calc(-1 * var(--s3));   /* bližšie k okraju, ako na desktope */
+               border-radius:0; overflow:visible }
+  .say--right .say__photo{ left:auto; right:auto }
+
+  .say__name, .say--right .say__name{
+    grid-area:meno; align-self:end; text-align:right; margin:0 0 var(--s5) }
+
+  .say__mark{ font-size:64px }
+  .say__mark--b{ right:var(--s3); bottom:var(--s2) }
 }
 
 /* mená v pásme, ktoré vedú na kartu */
@@ -320,17 +371,6 @@ body{
   /* headline zostáva dvojriadkový ako na plagáte, len bez medzery pre vežu */
   .hl{ line-height:.84 }
   .hl__line--2{ display:block }
-
-  /* 4 položky sa do riadku nezmestia – dva čisté riadky bez visiacej čiarky */
-  .topbar{
-    display:grid; grid-template-columns:auto auto;
-    justify-content:center; align-items:center;
-    gap:5px 8px; padding:8px; margin-top:12px;
-    font-size:10.5px; white-space:nowrap;
-  }
-  .topbar span{ gap:8px }
-  .topbar span::after{ width:11px; height:1.5px }
-  .topbar span:nth-child(2)::after{ display:none }
 }
 
 /* Na telefóne na výšku sa medzera pre vežu ZMESTÍ – zmerané: 21,5 % šírky
@@ -338,12 +378,15 @@ body{
    (181 %) aj poloha veže (31,1 %) platia na každej šírke rovnako. */
 @media (max-width:700px) and (orientation:portrait){
   .hero{ height:102vw }
-  /* zoom 146 % je najmenší, pri ktorom fotka pokryje celú výšku bloku;
-     poloha 19,5 % posadí vežu do medzery */
+  /* Zoom 146 % je najmenší, pri ktorom fotka pokryje celú výšku bloku.
+     Poloha je dopočítaná z fotky, nie odhadnutá: v súbore 1400×1241 je
+     hrot veže na 44,9 % šírky a 26,1 % výšky (odmerané po pixeloch).
+     Pri zoome 146 % z toho vyjde 21 % / 81,8 % – vtedy veža vystúpi
+     do medzery medzi ZA JEDEN a KRAJ a headline naozaj rozdelí. */
   .hero__bg{
     background-image:url("assets/hrad-1400.webp");
     background-size:146% auto;
-    background-position:19.5% 0%;
+    background-position:21% 81.8%;
   }
   .hl__line--2{ display:flex; justify-content:space-between; width:100% }
 }
