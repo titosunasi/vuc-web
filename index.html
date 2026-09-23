@@ -67,11 +67,13 @@ body{
 .hero__bg{
   position:absolute; inset:0;
   background-image:url("assets/hrad-2400.webp");
-  /* Veža je na 45 % šírky fotky, medzera v headline na 58,4 % šírky bloku.
-     Pri 'cover' nemá fotka vodorovnú rezervu, tak ju nazoomujeme na 130 %
-     šírky bloku – tým sa poloha veže viaže na šírku bloku rovnako ako písmo. */
+  /* Hrot veže je v súbore na 44,9 % šírky a 26,1 % výšky (odmerané po
+     pixeloch). Pri 'cover' nemá fotka vodorovnú rezervu, tak ju nazoomujeme
+     na 125 % šírky bloku – tým sa poloha veže viaže na šírku bloku rovnako
+     ako písmo. Zvislých 27,6 % posadí hrot tesne nad horný okraj písmen
+     ZA JEDEN / KRAJ, takže veža headline naozaj rozdelí. */
   background-size:125% auto;
-  background-position:0% 14.4%;
+  background-position:0% 27.6%;
   background-repeat:no-repeat;
 }
 .hero__inner{
@@ -97,7 +99,10 @@ body{
      na telefóne sa pás roztiahne na celú šírku. Prechod je plynulý,
      nie skokom – preto tu nie je žiadna mobilná výnimka. */
   width:max(var(--measure), min(100%, 360px));
-  margin:0 auto;
+  /* Pás je vysunutý o polovicu svojej výšky nahor, ale v toku stále zaberá
+     celú. Tú polovicu si tu odkrojíme, aby headline nezávisel od výšky pásu
+     – inak sa pri niektorých šírkach o pás oprel a mäkčeň zmizol. */
+  margin:0 auto -.596em;
   position:relative; z-index:3;
   transform:translateY(-50%);
   background:var(--ink);
@@ -140,7 +145,10 @@ body{
    Font má versálku 0,745 em → veľkosť písma 17,3 cqw,
    a plagát je o 10,2 % užší než prirodzený font → prestrkanie −0,035 em. */
 .hl{
-  margin:-0.6cqw 0 0;
+  /* Mäkčeň nad Č je najvyšší bod headlinu a pri line-height .787 trčí
+     0,1405 × veľkosť písma nad riadkový box – zmerané. Pri 12,6 cqw je to
+     1,77 cqw. K tomu 0,9 cqw vzduchu pod pásom = 2,67 cqw. */
+  margin:2.67cqw 0 0;
   font-family:var(--display);
   font-weight:900;
   width:max-content; max-width:100%; margin-inline:auto;
@@ -229,13 +237,15 @@ body{
   .team__fn, .team__sn{ white-space:nowrap }
 }
 
-/* Až na telefóne deväť mien do radu naozaj nejde – tam 3×3. */
+/* Deväť mien zostáva v jednom rade aj na telefóne, ako na plagáte.
+   Písmo sa preto pod 660 px viaže na šírku okna: deväť mien má spolu
+   23,19× veľkosť písma, k tomu osem medzier a bočné odsadenie 2×5,1 %.
+   Pri 3,05 vw to vyjde na každej šírke – pri 320 px zostáva 7 px rezervy. */
 @media (max-width:660px){
-  .team__list{
-    display:grid; grid-template-columns:repeat(3, minmax(0,1fr));
-    gap:var(--s4) var(--s2); padding:var(--s4) var(--s3);
-  }
-  .team__item{ align-items:center; text-align:center }
+  .team__fn, .team__sn{ font-size:clamp(8px, 3.05vw, 12px) }
+  .team__num{ font-size:clamp(9px, 2.6vw, 14px) }
+  .team__list{ padding:var(--s3) 5.1%; gap:var(--s1) }
+  .team__item{ gap:var(--s1) }
 }
 
 
@@ -348,6 +358,13 @@ body{
 .foot b{ font-weight:700 }
 .foot__note{ opacity:.72 }
 
+/* Medzi 701 a 1150 px je hero vyšší – spoločná fotka je tam už na celú
+   šírku – takže veža potrebuje inú zvislú polohu než na desktope.
+   Dopočítané rovnako: pri 768 aj 1024 px vyjde zhodne 33,8 %. */
+@media (min-width:701px) and (max-width:1150px){
+  .hero__bg{ background-position:0% 33.8% }
+}
+
 @media (max-width:700px){
   .frame{ padding:12px }
 
@@ -368,8 +385,10 @@ body{
     background-repeat:no-repeat, no-repeat;
   }
 
-  /* headline zostáva dvojriadkový ako na plagáte, len bez medzery pre vežu */
-  .hl{ line-height:.84 }
+  /* headline zostáva dvojriadkový ako na plagáte, len bez medzery pre vežu.
+     Vyšší riadok (.84) posadí inkúst nižšie – trčí len 0,115 × veľkosť
+     písma, teda 1,45 cqw. Plus tých istých 0,9 cqw vzduchu = 2,35 cqw. */
+  .hl{ line-height:.84; margin-top:2.35cqw }
   .hl__line--2{ display:block }
 }
 
@@ -378,15 +397,15 @@ body{
    (181 %) aj poloha veže (31,1 %) platia na každej šírke rovnako. */
 @media (max-width:700px) and (orientation:portrait){
   .hero{ height:102vw }
-  /* Zoom 146 % je najmenší, pri ktorom fotka pokryje celú výšku bloku.
-     Poloha je dopočítaná z fotky, nie odhadnutá: v súbore 1400×1241 je
-     hrot veže na 44,9 % šírky a 26,1 % výšky (odmerané po pixeloch).
-     Pri zoome 146 % z toho vyjde 21 % / 81,8 % – vtedy veža vystúpi
-     do medzery medzi ZA JEDEN a KRAJ a headline naozaj rozdelí. */
+  /* Hrot veže je v súbore 1400×1241 na 44,9 % šírky a 26,1 % výšky
+     (odmerané po pixeloch). Pri zoome 146 % nezostávala zvislá rezerva
+     na to, aby veža vystúpila až nad písmená – preto 164 %.
+     Z toho vychádza poloha 27,8 % / 70 %: vtedy hrot vyjde tesne nad
+     horný okraj ZA JEDEN / KRAJ a veža headline rozdelí. */
   .hero__bg{
     background-image:url("assets/hrad-1400.webp");
-    background-size:146% auto;
-    background-position:21% 81.8%;
+    background-size:164% auto;
+    background-position:27.8% 70%;
   }
   .hl__line--2{ display:flex; justify-content:space-between; width:100% }
 }
