@@ -39,6 +39,11 @@
   --s5:24px; --s6:32px; --s7:48px; --s8:64px;
 
   /* vnútorný okraj bloku – 7 % šírky, zmerané z plagátu */
+  --blue:#467599;   /* odmerané z modrej plochy v novinách */
+  /* Vloženie obsahu do sekcie – rovnaké pre krémovú plochu, výkuk
+     carouselov aj pre fotku s bielym pásom. Vďaka tomu majú všetky bloky
+     na stránke tú istú ľavú aj pravú hranu. */
+  --vlozenie:48px;
   --gutter:7%;
   /* Jedna spoločná miera: headline, skupinová fotka aj biely pás.
      Zodpovedá prirodzenej šírke prvého riadku pri 12,6 cqw. */
@@ -54,7 +59,9 @@ body{
   background:var(--orange);
   color:var(--ink);
   font-family:var(--text);
-  overflow-x:hidden;
+  /* clip, nie hidden: hidden z body spraví posúvateľný kontajner
+     a vtedy prestanú fungovať odkazy na kotvy (#bio-...). */
+  overflow-x:clip;
 }
 
 /* oranžová nie je rám, je to papier – obsah do nej len zapustíme */
@@ -133,11 +140,15 @@ body{
 /* ľudia stoja vo fotke, nie pod ňou */
 /* Menšia a orezaná do polovice tela – v PDF im biely pás siaha
    pod ruky, nohy vidieť nie sú. Výška = polovica výšky fotky. */
+/* Fotka aj biely pás majú šírku obsahu (1200 px). Musia ju mať rovnakú,
+   inak mená prestanú sedieť pod ľuďmi.
+   Pomer 3,319 = pomer fotky 2,0877 delený podielom, ktorý z nej ukazujeme
+   (62,9 %). Vďaka tomu je rez po pás rovnaký na každej šírke a netreba
+   pre mobil zvláštne pravidlo. */
 .hero__people{
-  position:relative; display:block; width:var(--measure); margin:0 auto;
-  /* o 3,9 cqw vyššie, než je vidieť – ten kus schová biely pás,
-     takže rez nikdy nevykukne */
-  height:18.9cqw; overflow:hidden;
+  position:relative; display:block;
+  width:min(1104px, calc(100% - 2*var(--vlozenie))); margin:0 auto;
+  aspect-ratio:3.319; overflow:hidden;
 }
 .hero__people img{ display:block; width:100%; height:auto }
 
@@ -183,7 +194,8 @@ body{
 /* ---------- DEVIATI: spoločná fotka + čísla ---------- */
 /* z-index musí byť – .hero__bg má will-change:transform, čím si vyrobí
    vlastnú vrstvu a inak by kreslil nad hlavami */
-.team{ position:relative; z-index:2 }
+.team{ position:relative; z-index:2;
+       width:min(1104px, calc(100% - 2*var(--vlozenie))); margin-inline:auto }
 
 .team__list{
   /* Pás nie je pod fotkou – sedí NA jej spodnej hrane a je široký
@@ -191,8 +203,12 @@ body{
   /* Pás je presne taký široký ako skupinová fotka a leží na jej spodnej
      hrane. Každá položka je potom posunutá tak, aby číslo a meno sedeli
      pod svojím človekom – polohy hláv sú odmerané z tej fotky. */
-  list-style:none; width:var(--measure); margin:-3.9cqw auto 0;
-  padding:var(--s3) clamp(18px, 3.44vw, 52px);  /* odmerané: pri tejto hodnote sadnú čísla najbližšie k ľuďom */
+  /* Prekryv 6,25 % šírky = 13 % výšky fotky, teda pás leží na polovici
+     výšky ľudí. Bočné odsadenie 6,8 % je hodnota, pri ktorej mená sedia
+     pod tvárami najlepšie – preosiate cez osem hodnôt, priemerná odchýlka
+     9,3 px. V percentách preto platí na každej šírke rovnako. */
+  list-style:none; width:100%; margin:-6.25% 0 0;
+  padding:var(--s4) 6.8%;
   background:var(--white); border-radius:clamp(10px,1.3vw,18px);
   display:flex; justify-content:space-between; align-items:flex-start; gap:var(--s3);
   position:relative;
@@ -216,36 +232,20 @@ body{
   text-transform:uppercase; letter-spacing:-.01em;
 }
 
-/* Pod 1150 px by sa deväť mien do pásu širokého 62,7 % ešte vošlo,
-   ale len tesne – pri 720 px zostávajú štyri pixely rezervy. Preto radšej
-   od 1150 px roztiahneme fotku aj pás na celú šírku. Oboje rovnako,
-   takže pomer medzi ľuďmi a menami zostáva a mená im sedia pod nohami.
-   Bočné odsadenie je preto v %, nie v px: 5,1 % je tá istá hodnota,
-   ktorá vyšla z merania zarovnania na desktope. */
+/* Pod 1150 px by sa deväť mien do úzkeho pásu ešte vošlo, ale len tesne.
+   Šírku už rieši min(1200px,100%) vyššie, tu zostáva len container pre cqw. */
 @media (max-width:1150px){
-  .team{ container-type:inline-size }   /* aby cqw bolo naozaj šírka pásu */
-
-  .hero__people{
-    width:100%;
-    /* prirodzená výška fotky pri plnej šírke je 47,9 cqw;
-       ukazujeme z nej 63 % – rovnaký rez po pás ako na desktope */
-    height:30.2cqw;
-  }
-
-  .team__list{
-    width:100%; margin:-6.25cqw 0 0;   /* pás leží na 50 % výšky fotky */
-    padding:var(--s4) 5.1%;
-    gap:var(--s2);
-  }
+  .team{ container-type:inline-size }
   .team__fn, .team__sn{ white-space:nowrap }
 }
 
 /* Deväť mien zostáva v jednom rade aj na telefóne, ako na plagáte.
    Písmo sa preto pod 660 px viaže na šírku okna: deväť mien má spolu
    23,19× veľkosť písma, k tomu osem medzier a bočné odsadenie 2×5,1 %.
-   Pri 3,05 vw to vyjde na každej šírke – pri 320 px zostáva 7 px rezervy. */
+   Po zúžení pásu na šírku obsahu vyšlo z merania 2,75 vw – pri 3,05 vw
+   posledné meno pretekalo o 7 px. */
 @media (max-width:660px){
-  .team__fn, .team__sn{ font-size:clamp(8px, 3.05vw, 12px) }
+  .team__fn, .team__sn{ font-size:clamp(7px, 2.75vw, 12px) }
   .team__num{ font-size:clamp(9px, 2.6vw, 14px) }
   .team__list{ padding:var(--s3) 5.1%; gap:var(--s1) }
   .team__item{ gap:var(--s1) }
@@ -256,8 +256,7 @@ body{
 /* Portréty sú vyexportované na jednotný pomer 0,80 s osobou na plnú výšku,
    takže fotku stačí viazať na VÝŠKU karty – presah 6,1 % potom sedí
    na každej karte rovnako, nech je text akokoľvek dlhý. */
-.says{ margin-top:var(--s5); display:grid; grid-template-columns:repeat(2,1fr);
-       gap:var(--s5); container-type:inline-size }
+.says{ margin-top:var(--s5); container-type:inline-size }
 
 .say{
   position:relative; background:var(--white); border-radius:var(--s6);
@@ -268,12 +267,13 @@ body{
 }
 .say--right{ padding:var(--s5) 46% var(--s5) var(--s5) }
 
-/* Fotka sa nikde neoreže: šírku zadáme, výška ide sama podľa pomeru
-   obrázka. Preto nie je z jednej strany useknutá a z druhej nie. */
-.say__photo{ position:absolute; bottom:0; left:2.5%; width:40%; height:auto;
-             overflow:hidden; border-radius:var(--s5) }
+/* Fotka vypĺňa väčšinu výšky karty a stojí na jej spodnej hrane.
+   Riadi ju výška, nie šírka – tak sa prispôsobí aj karte, ktorá vyrastie
+   dlhším citátom, a nikdy nevytŕča nad kartu. */
+.say__photo{ position:absolute; bottom:0; left:2.5%; height:86%; width:auto;
+             max-width:42%; overflow:hidden; border-radius:var(--s5) }
 .say--right .say__photo{ left:auto; right:2.5% }
-.say__photo img{ display:block; width:100%; height:auto }
+.say__photo img{ display:block; height:100%; width:auto }
 
 .say__body{ position:relative; width:100% }
 
@@ -299,10 +299,10 @@ body{
 
 /* objavenie pri scrolle */
 @media (prefers-reduced-motion:no-preference){
-  [data-reveal]{ opacity:0; transform:translate3d(0,24px,0) }
+  [data-reveal]{ opacity:0; transform:translate3d(0,32px,0) }
   [data-reveal].in{
     opacity:1; transform:none;
-    transition:opacity .6s ease var(--d,0ms), transform .6s cubic-bezier(.22,.7,.3,1) var(--d,0ms);
+    transition:opacity .7s ease var(--d,0ms), transform .7s cubic-bezier(.22,.7,.26,1) var(--d,0ms);
   }
 }
 @media (hover:hover) and (prefers-reduced-motion:no-preference){
@@ -311,7 +311,6 @@ body{
 }
 
 @media (max-width:860px){
-  .says{ grid-template-columns:1fr }
 
   /* Na mobile je karta mriežka: citát cez celú šírku, pod ním fotka vľavo
      a podpis vpravo. Fotka tak stojí na spodnej hrane karty presne ako na
@@ -329,9 +328,10 @@ body{
 
   .say__quote{ grid-area:citat; text-align:left }
 
-  .say__photo{ grid-area:fotka; position:static; width:100%; height:auto;
+  .say__photo{ grid-area:fotka; position:static; width:100%; height:auto; max-width:none;
                margin:0 0 0 calc(-1 * var(--s3));   /* bližšie k okraju, ako na desktope */
                border-radius:0; overflow:visible }
+  .say__photo img{ width:100%; height:auto }
   .say--right .say__photo{ left:auto; right:auto }
 
   .say__name, .say--right .say__name{
@@ -342,7 +342,8 @@ body{
 }
 
 /* mená v pásme, ktoré vedú na kartu */
-.team__link{ text-decoration:none; color:inherit; display:block; border-radius:10px }
+.team__link{ text-decoration:none; color:inherit; border-radius:10px;
+              display:flex; flex-direction:column; align-items:inherit; gap:var(--s2) }
 .team__link:focus-visible{ outline:3px solid var(--ink); outline-offset:3px }
 @media (hover:hover){
   .team__link{ transition:transform .2s ease }
@@ -399,18 +400,212 @@ body{
    bloku, na plagáte 21,1 %. Blok má pevný pomer 1:1,5, takže zoom fotky
    (181 %) aj poloha veže (31,1 %) platia na každej šírke rovnako. */
 @media (max-width:700px) and (orientation:portrait){
-  .hero{ height:102vw }
+  /* Výška podľa obsahu, nie pevných 102vw – medzi headlinom a ľuďmi
+     bolo 193 px prázdneho hradu. Takto je blok o polovicu nižší
+     a keďže je všetko v cqw, pomer výšky k šírke je na každom
+     telefóne rovnaký a veža sa nerozíde. */
+  .hero{ height:auto }
+  .hero__gap{ flex:0 0 auto; height:6cqw }
   /* Hrot veže je v súbore 1400×1241 na 44,9 % šírky a 26,1 % výšky
      (odmerané po pixeloch). Pri zoome 146 % nezostávala zvislá rezerva
      na to, aby veža vystúpila až nad písmená – preto 164 %.
-     Z toho vychádza poloha 27,8 % / 70 %: vtedy hrot vyjde tesne nad
+     Z toho vychádza poloha 27,8 % / 29 %: vtedy hrot vyjde tesne nad
      horný okraj ZA JEDEN / KRAJ a veža headline rozdelí. */
   .hero__bg{
     background-image:url("assets/hrad-1400.webp");
     background-size:164% auto;
-    background-position:27.8% 70%;
+    background-position:27.8% 29%;
   }
   .hl__line--2{ display:flex; justify-content:space-between; width:100% }
+}
+
+
+/* ======================================================================
+   OBSAHOVÁ ČASŤ
+   Šírka 1200 px – vychádza z janforgac.sk, kde je kontajner 1280 px.
+   Pri troch stĺpcoch tak vyjde karta 380 px a text v životopise 348 px,
+   čo je 48 znakov na riadok. Pri 860 px (šírka headlinu) by to bolo 34,
+   a to sa už nečíta dobre – merané.
+   ====================================================================== */
+.says, .plocha, .naj, .foot{ max-width:1200px; margin-inline:auto }
+
+/* Krémová plocha: oranžová zostáva hore pri plagáte, tu už oko oddýchne.
+   Krémová a nie biela preto, aby biele karty nezmizli. */
+.plocha{
+  margin-top:var(--s7); padding:var(--vlozenie);
+  background:var(--cream); border-radius:var(--s6);
+}
+
+/* ---------- NADPISY SEKCIÍ ---------- */
+.sec__h{
+  margin:0; font-family:var(--display); font-weight:900; text-transform:uppercase;
+  line-height:.88; letter-spacing:-.015em; text-align:center;
+  font-size:clamp(36px, 6.4vw, 82px);
+}
+.sec__h span{ display:block }
+.sec__h--a{ color:var(--ink) }
+.sec__h--b{ color:var(--orange) }
+.sec__lead{
+  max-width:60ch; margin:var(--s5) auto 0; color:var(--ink); text-align:center;
+  font-size:clamp(14px,1.15vw,17px); line-height:1.55;
+}
+
+/* ---------- CAROUSEL ---------- */
+/* Natívny scroll so zarážkami: swajpovanie aj klávesnica fungujú samé,
+   JS obsluhuje len šípky. Bočné odsadenie necháva vykúkať suseda
+   a maska ho zároveň stráca do stratena. */
+.rail{
+  --peek:var(--vlozenie);   /* rovnaké vloženie ako všade inde – karty lícujú */
+  display:flex; gap:var(--s5);
+  overflow-x:auto; overflow-y:hidden;
+  scroll-snap-type:x mandatory;
+  padding:var(--s4) var(--peek);
+  scroll-padding-inline:var(--peek);
+  scrollbar-width:none; -ms-overflow-style:none;
+  -webkit-overflow-scrolling:touch;
+  overscroll-behavior-x:contain;
+  -webkit-mask-image:linear-gradient(90deg,transparent 0,#000 var(--peek),#000 calc(100% - var(--peek)),transparent 100%);
+          mask-image:linear-gradient(90deg,transparent 0,#000 var(--peek),#000 calc(100% - var(--peek)),transparent 100%);
+}
+.rail::-webkit-scrollbar{ display:none }
+/* Percento vo flex-basis sa počíta z vnútornej šírky posúvača, v ktorej
+   bočné odsadenie už nie je – stačí odrátať medzeru medzi kartami.
+   min-width:0 je nutné: bez neho karta nesmie byť užšia než jej obsah.
+   Bunka je tu preto, lebo vnútri karty sú odsadenia v percentách a tie
+   sa počítajú z rodiča – bez bunky by sa počítali z celého posúvača. */
+.rail__cell{ flex:0 0 calc((100% - var(--s5)) / 2); min-width:0;
+             scroll-snap-align:start; display:flex }
+.rail__cell > *{ width:100% }
+.rail:focus-visible{ outline:3px solid var(--ink); outline-offset:4px; border-radius:var(--s5) }
+
+.rail__nav{ display:flex; justify-content:center; gap:var(--s3); margin-top:var(--s4) }
+/* Rovnaký tvar ako odrážka pri prioritách, len naopak: biely štvorec, oranžová šípka. */
+.rail__btn{
+  width:44px; height:44px; border-radius:10px;
+  border:0; background:var(--white); color:var(--orange);
+  display:grid; place-items:center; cursor:pointer; padding:0;
+  transition:background .2s ease, color .2s ease, opacity .2s ease;
+}
+.rail__btn svg{ width:22px; height:22px; fill:none; stroke:currentColor; stroke-width:2.6;
+                stroke-linecap:round; stroke-linejoin:round }
+.rail__btn:disabled{ opacity:.35; cursor:default }
+.rail__btn:focus-visible{ outline:3px solid var(--ink); outline-offset:3px }
+@media (hover:hover){ .rail__btn:not(:disabled):hover{ background:var(--orange); color:var(--white) } }
+
+/* ---------- 9 PRIORÍT – rozbaľovacie karty ---------- */
+.prio__grid{
+  list-style:none; margin:var(--s7) 0 0; padding:0;
+  display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:var(--s5);
+  align-items:start;
+}
+/* Vzorec: vonkajší polomer = vnútorný + odsadenie. Odrážka má 8, karta
+   odsadenie 24, preto karta 32. */
+.prio__card{ background:var(--white); border-radius:var(--s6) }
+.prio__btn{
+  width:100%; border:0; background:none; cursor:pointer;
+  padding:var(--s5); text-align:left;
+  display:flex; align-items:flex-start; gap:var(--s4);
+  font:inherit; color:inherit;
+}
+.prio__btn:focus-visible{ outline:3px solid var(--ink); outline-offset:-3px; border-radius:var(--s6) }
+.prio__badge{
+  width:34px; height:34px; border-radius:8px; background:var(--orange);
+  display:grid; place-items:center; flex:none;
+}
+.prio__arrow{ width:19px; height:19px; fill:none; stroke:var(--white); stroke-width:2.6;
+              stroke-linecap:round; stroke-linejoin:round;
+              transition:transform .3s cubic-bezier(.22,.7,.3,1) }
+.prio__card.is-open .prio__arrow{ transform:rotate(90deg) }
+.prio__t{
+  font-family:var(--display); font-weight:900; text-transform:uppercase;
+  font-size:clamp(19px,1.9vw,28px); line-height:1.02; letter-spacing:-.015em; color:var(--ink);
+}
+/* rozbalenie: mriežka z 0fr na 1fr sa dá plynulo animovať */
+.prio__panel{ display:grid; grid-template-rows:0fr; transition:grid-template-rows .35s cubic-bezier(.22,.7,.3,1) }
+.prio__card.is-open .prio__panel{ grid-template-rows:1fr }
+.prio__panel-in{ overflow:hidden }
+.prio__p{ margin:0; padding:0 var(--s5) var(--s5);
+          font-size:clamp(14px,1.05vw,16px); line-height:1.55; color:var(--ink) }
+@media (hover:hover){ .prio__card:hover{ box-shadow:0 10px 26px rgba(0,0,0,.10) } }
+.prio__card{ transition:box-shadow .25s ease }
+
+/* ---------- ŽIVOTOPISY ---------- */
+.bios{ margin-top:var(--s8); scroll-margin-top:var(--s5) }
+.bios__grid{
+  list-style:none; margin:var(--s7) 0 0; padding:0;
+  display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:var(--s6);
+}
+/* Vzorec: fotka má 8, karta odsadenie 16, karta teda 24. */
+.bio{
+  background:var(--white); border-radius:var(--s5); padding:var(--s4);
+  display:flex; flex-direction:column; gap:var(--s4); scroll-margin-top:var(--s5);
+}
+.bio__head{ position:relative; display:flex; align-items:flex-end; gap:var(--s4) }
+.bio__photo{ flex:0 0 clamp(96px, 34%, 148px); aspect-ratio:3/4;
+             border-radius:var(--s2); overflow:hidden; background:var(--blue) }
+.bio__photo img{ display:block; width:100%; height:100%; object-fit:cover }
+/* číslo naráža na roh fotky, ako v novinách */
+.bio__num{
+  position:absolute; left:calc(-1 * var(--s2)); bottom:calc(-1 * var(--s2));
+  font-family:var(--display); font-weight:900; font-size:clamp(20px,2.1vw,30px);
+  line-height:1; color:var(--white); background:var(--orange);
+  border-radius:8px; width:1.52em; aspect-ratio:1;
+  display:grid; place-items:center; padding:0 0 .06em;
+}
+.bio__body{ display:flex; flex-direction:column; gap:var(--s3); flex:1 }
+.bio__name{ margin:0; line-height:1.08; flex:1; min-width:0 }
+/* krstné meno a priezvisko majú rovnakú veľkosť, líšia sa len rezom a farbou */
+.bio__fn{ display:block; font-family:var(--display); font-weight:700;
+          font-size:clamp(17px,1.6vw,23px); color:var(--ink); letter-spacing:.01em }
+.bio__sn{ display:block; font-family:var(--display); font-weight:900;
+          font-size:clamp(17px,1.6vw,23px); color:var(--orange);
+          text-transform:uppercase; letter-spacing:-.01em }
+.bio__text{ font-size:clamp(13px,1vw,15px); line-height:1.55; color:var(--ink) }
+.bio__text p{ margin:0 }
+.bio:not(.is-open) .bio__text p{
+  display:-webkit-box; -webkit-line-clamp:4; -webkit-box-orient:vertical; overflow:hidden;
+}
+.bio__more{
+  align-self:flex-start; margin-top:auto;
+  background:none; border:0; padding:0; cursor:pointer;
+  font-family:var(--text); font-weight:700; font-size:clamp(13px,1vw,15px);
+  color:var(--orange); text-decoration:underline; text-underline-offset:3px;
+}
+.bio__more:focus-visible{ outline:3px solid var(--ink); outline-offset:3px; border-radius:4px }
+.todo{ margin:0; font-size:clamp(13px,1vw,15px); line-height:1.55; color:var(--ink); opacity:.55; font-style:italic }
+
+/* ---------- 9 NAJ Z NÁŠHO KRAJA ---------- */
+.naj{
+  margin-top:var(--s7); background:var(--blue); color:var(--white);
+  border-radius:var(--s6); padding:var(--vlozenie) 0;
+}
+.naj__title{
+  margin:0 0 var(--s6); padding-inline:var(--vlozenie); font-family:var(--script); font-weight:400; text-align:center;
+  font-size:clamp(44px,7.4vw,104px); line-height:.92; color:var(--white);
+}
+/* tmavší podklad karty zvýši kontrast bielej zo 4,92 na 6,0:1 */
+.naj__item{ background:rgba(0,0,0,.14); border-radius:var(--s5); padding:var(--s5) }
+.naj__kto{ margin:0 0 var(--s2); font-family:var(--display); font-weight:900;
+           font-size:clamp(17px,1.5vw,22px); line-height:1.05; color:var(--white) }
+.naj__fn{ font-weight:700 }
+.naj__p{ margin:0; font-size:clamp(14px,1.05vw,16px); line-height:1.55; color:var(--white) }
+.naj .todo{ color:var(--white); opacity:.7 }
+.rail--naj .rail__btn{ background:var(--white); color:var(--blue) }
+@media (hover:hover){ .rail--naj .rail__btn:not(:disabled):hover{ background:var(--ink); color:var(--white) } }
+
+/* ---------- ZLOMY ---------- */
+@media (max-width:1000px){
+  .prio__grid, .bios__grid{ grid-template-columns:repeat(2,minmax(0,1fr)) }
+}
+@media (max-width:860px){
+  .rail__cell{ flex:0 0 100% }
+}
+@media (max-width:640px){
+  .prio__grid, .bios__grid{ grid-template-columns:minmax(0,1fr) }
+  :root{ --vlozenie:24px }
+  .plocha{ margin-top:var(--s6); padding:var(--s5) }
+
+  .bios{ margin-top:var(--s7) }
 }
 </style>
 </head>
@@ -452,90 +647,389 @@ body{
     <h2 id="kandidati-nadpis" class="vh">Deväť kandidátov do Trenčianskeho samosprávneho kraja</h2>
     <ol class="team__list">
         <li class="team__item">
-          <span class="team__num">02</span>
-          <span class="team__name"><span class="team__fn">Martin</span><span class="team__sn">Barčák</span></span>
+          <a class="team__link" href="#bio-barcak"><span class="team__num">02</span><span class="team__name"><span class="team__fn">Martin</span><span class="team__sn">Barčák</span></span></a>
         </li>
         <li class="team__item">
-          <span class="team__num">03</span>
-          <a class="team__link" href="#benovicova"><span class="team__name"><span class="team__fn">Martina</span><span class="team__sn">Beňovičová</span></span></a>
+          <a class="team__link" href="#bio-benovicova"><span class="team__num">03</span><span class="team__name"><span class="team__fn">Martina</span><span class="team__sn">Beňovičová</span></span></a>
         </li>
         <li class="team__item">
-          <span class="team__num">13</span>
-          <span class="team__name"><span class="team__fn">Ľubomír</span><span class="team__sn">Horný</span></span>
+          <a class="team__link" href="#bio-horny"><span class="team__num">13</span><span class="team__name"><span class="team__fn">Ľubomír</span><span class="team__sn">Horný</span></span></a>
         </li>
         <li class="team__item">
-          <span class="team__num">15</span>
-          <a class="team__link" href="#huserka"><span class="team__name"><span class="team__fn">Juraj</span><span class="team__sn">Húserka</span></span></a>
+          <a class="team__link" href="#bio-huserka"><span class="team__num">15</span><span class="team__name"><span class="team__fn">Juraj</span><span class="team__sn">Húserka</span></span></a>
         </li>
         <li class="team__item">
-          <span class="team__num">31</span>
-          <a class="team__link" href="#misakova"><span class="team__name"><span class="team__fn">Zuzana</span><span class="team__sn">Mišáková</span></span></a>
+          <a class="team__link" href="#bio-misakova"><span class="team__num">31</span><span class="team__name"><span class="team__fn">Zuzana</span><span class="team__sn">Mišáková</span></span></a>
         </li>
         <li class="team__item">
-          <span class="team__num">40</span>
-          <span class="team__name"><span class="team__fn">Martin</span><span class="team__sn">Smolka</span></span>
+          <a class="team__link" href="#bio-smolka"><span class="team__num">40</span><span class="team__name"><span class="team__fn">Martin</span><span class="team__sn">Smolka</span></span></a>
         </li>
         <li class="team__item">
-          <span class="team__num">46</span>
-          <span class="team__name"><span class="team__fn">Róbert</span><span class="team__sn">Švehla</span></span>
+          <a class="team__link" href="#bio-svehla"><span class="team__num">46</span><span class="team__name"><span class="team__fn">Róbert</span><span class="team__sn">Švehla</span></span></a>
         </li>
         <li class="team__item">
-          <span class="team__num">48</span>
-          <a class="team__link" href="#vano"><span class="team__name"><span class="team__fn">Tomáš</span><span class="team__sn">Vaňo</span></span></a>
+          <a class="team__link" href="#bio-vano"><span class="team__num">48</span><span class="team__name"><span class="team__fn">Tomáš</span><span class="team__sn">Vaňo</span></span></a>
         </li>
         <li class="team__item">
-          <span class="team__num">51</span>
-          <span class="team__name"><span class="team__fn">Patrik</span><span class="team__sn">Žák</span></span>
+          <a class="team__link" href="#bio-zak"><span class="team__num">51</span><span class="team__name"><span class="team__fn">Patrik</span><span class="team__sn">Žák</span></span></a>
         </li>
     </ol>
   </section>
 
   <section class="says" aria-labelledby="vyjadrenia-nadpis">
     <h2 id="vyjadrenia-nadpis" class="vh">Čo hovoria kandidáti</h2>
-      <article class="say" id="huserka" data-reveal>
-        <div class="say__photo">
-          <img src="assets/huserka.webp" width="1008" height="900" loading="lazy" alt="Juraj Húserka">
+    <div class="rail" data-rail tabindex="0" aria-label="Príhovory kandidátov, posúvateľné">
+      <div class="rail__cell">
+        <article class="say" id="huserka" data-reveal>
+          <div class="say__photo">
+            <img src="assets/huserka.webp" width="700" height="875" loading="lazy" alt="Juraj Húserka">
+          </div>
+          <div class="say__body">
+            <span class="say__mark say__mark--a" aria-hidden="true">&rdquo;</span>
+            <span class="say__mark say__mark--b" aria-hidden="true">&ldquo;</span>
+            <blockquote class="say__quote">Ako starosta obce Horné Srnie vnímam, že rozvoj regiónu stojí na úzkej spolupráci obcí a kraja. <b>V krajských voľbách máte v rukách možnosť zakrúžkovať až 9 kandidátov. Využite túto šancu naplno.</b></blockquote>
+            <p class="say__name"><span class="say__fn">Juraj</span><span class="say__sn">Húserka</span></p>
+          </div>
+        </article>
+      </div>
+      <div class="rail__cell">
+        <article class="say say--right" id="benovicova" data-reveal>
+          <div class="say__photo">
+            <img src="assets/benovicova.webp" width="700" height="875" loading="lazy" alt="Martina Beňovičová">
+          </div>
+          <div class="say__body">
+            <span class="say__mark say__mark--a" aria-hidden="true">&rdquo;</span>
+            <span class="say__mark say__mark--b" aria-hidden="true">&ldquo;</span>
+            <blockquote class="say__quote">Keď spojím rolu mamy, knihovníčky a cukrárky, viem, že tie najlepšie veci potrebujú starostlivosť, skúsenosť a poctivé ingrediencie. <b>Náš kraj si zaslúži dobré rozhodnutia postavené na pevných základoch.</b></blockquote>
+            <p class="say__name"><span class="say__fn">Martina</span><span class="say__sn">Beňovičová</span></p>
+          </div>
+        </article>
+      </div>
+      <div class="rail__cell">
+        <article class="say" id="misakova" data-reveal>
+          <div class="say__photo">
+            <img src="assets/misakova.webp" width="700" height="875" loading="lazy" alt="Zuzana Mišáková">
+          </div>
+          <div class="say__body">
+            <span class="say__mark say__mark--a" aria-hidden="true">&rdquo;</span>
+            <span class="say__mark say__mark--b" aria-hidden="true">&ldquo;</span>
+            <blockquote class="say__quote">V politike sa riadim rozumom, ale aj svedomím. Verím, že verejný život potrebuje kultúru a ľudskosť. <b>Využite každý svoj hlas a zvoľte si tím krajských poslancov, na ktorý sa môžete spoľahnúť.</b></blockquote>
+            <p class="say__name"><span class="say__fn">Zuzana</span><span class="say__sn">Mišáková</span></p>
+          </div>
+        </article>
+      </div>
+      <div class="rail__cell">
+        <article class="say say--right" id="vano" data-reveal>
+          <div class="say__photo">
+            <img src="assets/vano.webp" width="700" height="875" loading="lazy" alt="Tomáš Vaňo">
+          </div>
+          <div class="say__body">
+            <span class="say__mark say__mark--a" aria-hidden="true">&rdquo;</span>
+            <span class="say__mark say__mark--b" aria-hidden="true">&ldquo;</span>
+            <blockquote class="say__quote">Som poslanec Trenčianskeho samosprávneho kraja a dôverne poznám, ako funguje krajská politika, a viem, že človek nemôže bojovať sám. <b>Skutočné výsledky vznikajú len vtedy, keď ťaháme za jeden povraz.</b></blockquote>
+            <p class="say__name"><span class="say__fn">Tomáš</span><span class="say__sn">Vaňo</span></p>
+          </div>
+        </article>
+      </div>
+    </div>
+    <div class="rail__nav">
+      <button class="rail__btn" type="button" data-dir="-1" aria-label="Predchádzajúci príhovor">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M15 4 7 12l8 8"/></svg>
+      </button>
+      <button class="rail__btn" type="button" data-dir="1" aria-label="Ďalší príhovor">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 4l8 8-8 8"/></svg>
+      </button>
+    </div>
+  </section>
+
+
+  <!-- Od tohto miesta ide krémové pozadie. Oranžová zostáva hore na hero,
+       páse s menami a príhovoroch – tam, kde je plagát. -->
+  <div class="plocha">
+
+  <!-- ---------- 9 KRÚŽKOV, 9 PRIORÍT ---------- -->
+  <section class="prio" aria-labelledby="priority-nadpis" data-reveal>
+    <h2 class="sec__h" id="priority-nadpis" data-reveal><span class="sec__h--a">9 krúžkov, 9 priorít</span><span class="sec__h--b">pre náš kraj</span></h2>
+    <p class="sec__lead">Žijeme tu spolu a náš kraj má obrovský potenciál. Aby sa nám však zmeny podarilo presadiť, potrebujeme silný hlas v krajskom zastupiteľstve. S vašimi 9 krúžkami dokážeme jednoduchšie presadiť všetkých 9 priorít.</p>
+    <ul class="prio__grid">
+      <li class="prio__card" data-reveal>
+        <button class="prio__btn" type="button" aria-expanded="false" aria-controls="prio-1">
+          <span class="prio__badge"><svg class="prio__arrow" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 12h14M13 6l6 6-6 6"/></svg></span>
+          <span class="prio__t">Bezpečné a hladké cesty do práce aj domov</span>
+        </button>
+        <div class="prio__panel" id="prio-1">
+          <div class="prio__panel-in"><p class="prio__p">Dieram na cestách a zničeným nápravám na autách musí byť koniec. Naše krajské cesty II. a III. triedy spájajú vaše domovy s prácou a školami. Presadzujeme systematickú opravu cestnej siete, modernizáciu mostov a rýchlu zimnú údržbu.</p></div>
         </div>
-        <div class="say__body">
-          <span class="say__mark say__mark--a" aria-hidden="true">&rdquo;</span>
-          <span class="say__mark say__mark--b" aria-hidden="true">&ldquo;</span>
-          <blockquote class="say__quote">Ako starosta obce Horné Srnie vnímam, že rozvoj regiónu stojí na úzkej spolupráci obcí a kraja. <b>V krajských voľbách máte v rukách možnosť zakrúžkovať až 9 kandidátov. Využite túto šancu naplno.</b></blockquote>
-          <p class="say__name"><span class="say__fn">Juraj</span><span class="say__sn">Húserka</span></p>
+      </li>
+      <li class="prio__card" data-reveal>
+        <button class="prio__btn" type="button" aria-expanded="false" aria-controls="prio-2">
+          <span class="prio__badge"><svg class="prio__arrow" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 12h14M13 6l6 6-6 6"/></svg></span>
+          <span class="prio__t">Spoj, na ktorý sa dá vždy spoľahnúť</span>
+        </button>
+        <div class="prio__panel" id="prio-2">
+          <div class="prio__panel-in"><p class="prio__p">Nemôže sa stať, že sa nedostanete do práce alebo dieťa z krúžku domov len preto, že neide žiadny autobus. Budeme presadzovať moderné, klimatizované autobusy, nízke ceny lístkov pre študentov a seniorov a nadväznosť spojov tak, aby ste nemuseli čakať desiatky minút na prestupoch.</p></div>
         </div>
-      </article>
-      <article class="say say--right" id="benovicova" data-reveal>
-        <div class="say__photo">
-          <img src="assets/benovicova.webp" width="1008" height="900" loading="lazy" alt="Martina Beňovičová">
+      </li>
+      <li class="prio__card" data-reveal>
+        <button class="prio__btn" type="button" aria-expanded="false" aria-controls="prio-3">
+          <span class="prio__badge"><svg class="prio__arrow" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 12h14M13 6l6 6-6 6"/></svg></span>
+          <span class="prio__t">Dostupná zdravotná starostlivosť</span>
+        </button>
+        <div class="prio__panel" id="prio-3">
+          <div class="prio__panel-in"><p class="prio__p">Strach o zdravie blízkych je to najhoršie, čo človek zažíva. Budeme tlačiť na to, aby vo vašich mestách a obciach nebol problém nájsť obvodného lekára, tak, ako sa to podarilo Jurajovi Húserkovi v Hornom Srní.</p></div>
         </div>
-        <div class="say__body">
-          <span class="say__mark say__mark--a" aria-hidden="true">&rdquo;</span>
-          <span class="say__mark say__mark--b" aria-hidden="true">&ldquo;</span>
-          <blockquote class="say__quote">Keď spojím rolu mamy, knihovníčky a cukrárky, viem, že tie najlepšie veci potrebujú starostlivosť, skúsenosť a poctivé ingrediencie. <b>Náš kraj si zaslúži dobré rozhodnutia postavené na pevných základoch.</b></blockquote>
-          <p class="say__name"><span class="say__fn">Martina</span><span class="say__sn">Beňovičová</span></p>
+      </li>
+      <li class="prio__card" data-reveal>
+        <button class="prio__btn" type="button" aria-expanded="false" aria-controls="prio-4">
+          <span class="prio__badge"><svg class="prio__arrow" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 12h14M13 6l6 6-6 6"/></svg></span>
+          <span class="prio__t">Živá kultúra a pamäť nášho kraja</span>
+        </button>
+        <div class="prio__panel" id="prio-4">
+          <div class="prio__panel-in"><p class="prio__p">Kultúra nie sú len budovy, sú to ľudia, tradície a podujatia, ktoré spájajú susedov a komunity. Budeme podporovať miestne domy kultúry, ochotnícke divadlá, remeselníkov a tradičné podujatia v mestách aj na dedinách.</p></div>
         </div>
-      </article>
-      <article class="say" id="misakova" data-reveal>
-        <div class="say__photo">
-          <img src="assets/misakova.webp" width="1008" height="900" loading="lazy" alt="Zuzana Mišáková">
+      </li>
+      <li class="prio__card" data-reveal>
+        <button class="prio__btn" type="button" aria-expanded="false" aria-controls="prio-5">
+          <span class="prio__badge"><svg class="prio__arrow" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 12h14M13 6l6 6-6 6"/></svg></span>
+          <span class="prio__t">Dôstojná a ľudská starostlivosť o našich seniorov</span>
+        </button>
+        <div class="prio__panel" id="prio-5">
+          <div class="prio__panel-in"><p class="prio__p">Naši rodičia a starí rodičia budovali tento región a zaslúžia si úctu a špičkovú starostlivosť. Budeme presadzovať dostatok miest v domovoch sociálnych služieb, skracovanie čakacích lehôt a priamu finančnú podporu pre rodiny, ktoré sa o svojich príbuzných starajú doma.</p></div>
         </div>
-        <div class="say__body">
-          <span class="say__mark say__mark--a" aria-hidden="true">&rdquo;</span>
-          <span class="say__mark say__mark--b" aria-hidden="true">&ldquo;</span>
-          <blockquote class="say__quote">V politike sa riadim rozumom, ale aj svedomím. Verím, že verejný život potrebuje kultúru a ľudskosť. <b>Využite každý svoj hlas a zvoľte si tím krajských poslancov, na ktorý sa môžete spoľahnúť.</b></blockquote>
-          <p class="say__name"><span class="say__fn">Zuzana</span><span class="say__sn">Mišáková</span></p>
+      </li>
+      <li class="prio__card" data-reveal>
+        <button class="prio__btn" type="button" aria-expanded="false" aria-controls="prio-6">
+          <span class="prio__badge"><svg class="prio__arrow" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 12h14M13 6l6 6-6 6"/></svg></span>
+          <span class="prio__t">Vážska cyklomagistrála a bezpečný pohyb na bicykli</span>
+        </button>
+        <div class="prio__panel" id="prio-6">
+          <div class="prio__panel-in"><p class="prio__p">Bicykel už nie je len hobby, pre mnohých z vás je to každodenný dopravný prostriedok do práce. Budeme pokračovať v budovaní Vážskej cyklomagistrály a nadväzujúcich cyklotrás.</p></div>
         </div>
-      </article>
-      <article class="say say--right" id="vano" data-reveal>
-        <div class="say__photo">
-          <img src="assets/vano.webp" width="1008" height="900" loading="lazy" alt="Tomáš Vaňo">
+      </li>
+      <li class="prio__card" data-reveal>
+        <button class="prio__btn" type="button" aria-expanded="false" aria-controls="prio-7">
+          <span class="prio__badge"><svg class="prio__arrow" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 12h14M13 6l6 6-6 6"/></svg></span>
+          <span class="prio__t">Stredné školy, ktoré dajú vašim deťom budúcnosť</span>
+        </button>
+        <div class="prio__panel" id="prio-7">
+          <div class="prio__panel-in"><p class="prio__p">Chceme, aby naše deti zostávali žiť a pracovať doma. Preto budeme investovať do stredných škôl a gymnázií, opravovať internáty a vybavovať učebne najnovšou technikou.</p></div>
         </div>
-        <div class="say__body">
-          <span class="say__mark say__mark--a" aria-hidden="true">&rdquo;</span>
-          <span class="say__mark say__mark--b" aria-hidden="true">&ldquo;</span>
-          <blockquote class="say__quote">Som poslanec Trenčianskeho samosprávneho kraja a dôverne poznám, ako funguje krajská politika, a viem, že človek nemôže bojovať sám. <b>Skutočné výsledky vznikajú len vtedy, keď ťaháme za jeden povraz.</b></blockquote>
-          <p class="say__name"><span class="say__fn">Tomáš</span><span class="say__sn">Vaňo</span></p>
+      </li>
+      <li class="prio__card" data-reveal>
+        <button class="prio__btn" type="button" aria-expanded="false" aria-controls="prio-8">
+          <span class="prio__badge"><svg class="prio__arrow" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 12h14M13 6l6 6-6 6"/></svg></span>
+          <span class="prio__t">Čistá voda a kanalizácia</span>
+        </button>
+        <div class="prio__panel" id="prio-8">
+          <div class="prio__panel-in"><p class="prio__p">Podporíme starostov a primátorov získavať finančné zdroje na budovanie vodovodov, kanalizácií a na ochranu pred povodňami či suchom.</p></div>
         </div>
-      </article>
+      </li>
+      <li class="prio__card" data-reveal>
+        <button class="prio__btn" type="button" aria-expanded="false" aria-controls="prio-9">
+          <span class="prio__badge"><svg class="prio__arrow" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 12h14M13 6l6 6-6 6"/></svg></span>
+          <span class="prio__t">Šport a pohyb</span>
+        </button>
+        <div class="prio__panel" id="prio-9">
+          <div class="prio__panel-in"><p class="prio__p">Šport musí byť dostupný pre každé dieťa a mladého človeka bez ohľadu na to, z akej rodiny pochádza. Zabezpečíme systémovú finančnú podporu pre mládežnícke športové kluby, obnovu školských ihrísk, telocviční a stavbu moderných workoutových či multifunkčných plôch v obciach.</p></div>
+        </div>
+      </li>
+    </ul>
+  </section>
+
+  <!-- ---------- ŽIVOTOPISY ---------- -->
+  <section class="bios" id="zivotopisy" aria-labelledby="bio-nadpis" data-reveal>
+    <h2 class="sec__h" id="bio-nadpis" data-reveal><span class="sec__h--a">Rôzne životné príbehy,</span><span class="sec__h--b">jeden silný tím</span></h2>
+    <p class="sec__lead">V našej zostave nájdete starostu obce, dlhoročného poslanca, divadelníčku, právnika, sociálneho pracovníka, knihovníčku aj futbalistu. Je to pestrá zmes ľudí a rôznych odborností, vďaka ktorej si vieme navzájom pomôcť, poradiť a pozrieť sa na každý problém z viacerých strán. V kraji tak budete mať zastúpenie na naozaj každú oblasť života.</p>
+    <ul class="bios__grid">
+      <li class="bio" id="bio-barcak" data-reveal>
+        <div class="bio__head">
+          <div class="bio__photo">
+            <img src="assets/bio-barcak.webp" width="720" height="960" loading="lazy" alt="Martin Barčák">
+            </div>
+          <span class="bio__num">02</span>
+          <p class="bio__name"><span class="bio__fn">Martin</span><span class="bio__sn">Barčák</span></p>
+        </div>
+        <div class="bio__body">
+          <div class="bio__text"><p>Nie som človek veľkých rečí a prázdnych sľubov, verím v poctivú prácu. Narodil som sa v Košiciach, no od detstva žijem v Trenčíne, dnes na Zámostí, a mesto poznám ulicu po ulici. Vo voľnom čase rád behám, pravidelne aj polmaratóny, a radosť čerpám v záhrade a pri gitare. Celý život som folklorista a teší ma, že túto vášeň zdedila aj moja vnučka, s ktorou trénujeme na husliach. Som hrdý manžel, otec a trojnásobný dedko.</p></div>
+          <button class="bio__more" type="button">Viac</button>
+        </div>
+      </li>
+      <li class="bio" id="bio-benovicova" data-reveal>
+        <div class="bio__head">
+          <div class="bio__photo">
+            <img src="assets/bio-benovicova.webp" width="720" height="960" loading="lazy" alt="Martina Beňovičová">
+            </div>
+          <span class="bio__num">03</span>
+          <p class="bio__name"><span class="bio__fn">Martina</span><span class="bio__sn">Beňovičová</span></p>
+        </div>
+        <div class="bio__body">
+          <div class="bio__text"><p>Pracujem ako detská knihovníčka a snažím sa u detí pestovať lásku ku knižkám namiesto sedenia pri mobiloch. Celý život žijem v našom kraji, narodila som sa v Trenčíne a vydala som sa do Stankoviec. Som hrdá mama troch detí a vo voľnom čase rada zájdem s naším buldočkom do prírody. Ako mama, knihovníčka a cukrárka viem, že všetko dobré si vyžaduje starostlivosť a poctivé ingrediencie. Presne tak chcem pristupovať aj k rozvoju nášho kraja.</p></div>
+          <button class="bio__more" type="button">Viac</button>
+        </div>
+      </li>
+      <li class="bio" id="bio-horny" data-reveal>
+        <div class="bio__head">
+          <div class="bio__photo">
+            <img src="assets/bio-horny.webp" width="720" height="960" loading="lazy" alt="Ľubomír Horný">
+            </div>
+          <span class="bio__num">13</span>
+          <p class="bio__name"><span class="bio__fn">Ľubomír</span><span class="bio__sn">Horný</span></p>
+        </div>
+        <div class="bio__body">
+          <div class="bio__text"><p>Som riaditeľ a už 30 rokov pracujem v obchodnej sfére na manažérskych pozíciách. Vo voľnom čase sa venujem vedeniu futbalového športového klubu TFK Opatová, kde vychovávame mládež a spájame športovú komunitu ľudí. Kraj potrebuje skúsených ľudí, aby mohlo pokračovať v napredovaní a dokončení rozbehnutých projektov.</p></div>
+          <button class="bio__more" type="button">Viac</button>
+        </div>
+      </li>
+      <li class="bio" id="bio-huserka" data-reveal>
+        <div class="bio__head">
+          <div class="bio__photo">
+            <img src="assets/bio-huserka.webp" width="720" height="960" loading="lazy" alt="Juraj Húserka">
+            </div>
+          <span class="bio__num">15</span>
+          <p class="bio__name"><span class="bio__fn">Juraj</span><span class="bio__sn">Húserka</span></p>
+        </div>
+        <div class="bio__body">
+          <div class="bio__text"><p>Ako starosta Horného Srnia sa každý deň stretávam s konkrétnymi problémami a potrebami ľudí. Som človek, ktorý hľadá spôsoby, nie dôvody, prečo sa veci nedajú. Od začiatku môjho pôsobenia v samospráve sa snažím ľudí spájať, hľadať spoločné riešenia a posúvať veci dopredu. Tento prístup chcem priniesť aj do nášho kraja a skúsenosti zo samosprávy využiť pri hľadaní riešení, ktoré budú zohľadňovať potreby obcí a miest. Vo voľnom čase trávim čas s rodinou a rád si idem zabehať do lesa.</p></div>
+          <button class="bio__more" type="button">Viac</button>
+        </div>
+      </li>
+      <li class="bio" id="bio-misakova" data-reveal>
+        <div class="bio__head">
+          <div class="bio__photo">
+            <img src="assets/bio-misakova.webp" width="720" height="960" loading="lazy" alt="Zuzana Mišáková">
+            </div>
+          <span class="bio__num">31</span>
+          <p class="bio__name"><span class="bio__fn">Zuzana</span><span class="bio__sn">Mišáková</span></p>
+        </div>
+        <div class="bio__body">
+          <div class="bio__text"><p>Pracujem ako riaditeľka Mestského divadla Trenčín, venujem sa aj vzdelávaniu, zlepšovaniu života komunít a charite. Chcem rozvíjať školskú, kultúrnu a športovú infraštruktúru, dostupnosť ihrísk a relaxačných zón, starostlivosť o deti, ako aj ľudský potenciál. Dôležité je pre mňa zdravé životné prostredie, čo nie je len zeleň, ale aj eliminácia sociálno-patologických javov. Politika potrebuje kultúrny prístup, nie nenávisť. Mojím krédom je spájať.</p></div>
+          <button class="bio__more" type="button">Viac</button>
+        </div>
+      </li>
+      <li class="bio" id="bio-smolka" data-reveal>
+        <div class="bio__head">
+          <div class="bio__photo">
+            <img src="assets/bio-smolka.webp" width="720" height="960" loading="lazy" alt="Martin Smolka">
+            </div>
+          <span class="bio__num">40</span>
+          <p class="bio__name"><span class="bio__fn">Martin</span><span class="bio__sn">Smolka</span></p>
+        </div>
+        <div class="bio__body">
+          <div class="bio__text"><p>Viac ako 30 rokov pracujem v oblasti bezpečnosti a športu a týmto témam sa chcem venovať aj naďalej. Som predsedom komisie športu pri mestskom zastupiteľstve v Trenčíne a mám ambíciu ešte viac podporovať šport v kraji a modernizovať športovú infraštruktúru tak, ako sa nám darilo aj po minulé roky.</p></div>
+          <button class="bio__more" type="button">Viac</button>
+        </div>
+      </li>
+      <li class="bio" id="bio-svehla" data-reveal>
+        <div class="bio__head">
+          <div class="bio__photo">
+            <img src="assets/bio-svehla.webp" width="720" height="960" loading="lazy" alt="Róbert Švehla">
+            </div>
+          <span class="bio__num">46</span>
+          <p class="bio__name"><span class="bio__fn">Róbert</span><span class="bio__sn">Švehla</span></p>
+        </div>
+        <div class="bio__body">
+          <div class="bio__text"><p>Na vlastnej koži som videl, ako fungujú mestá v zahraničí a ich sociálna politika. Tieto skúsenosti chcem preniesť do mesta aj kraja. Vyrastal som v Spojených štátoch, vysokú školu som študoval v Kanade a vo Švédsku, a to aj vďaka úspešnej hokejovej kariére môjho otca. V Kanade som absolvoval bakalárske štúdium s dvojodborom politológia a história. Mojou doménou je sociálna politika, ktorej sa v Trenčíne venujem už v súčasnosti.</p></div>
+          <button class="bio__more" type="button">Viac</button>
+        </div>
+      </li>
+      <li class="bio" id="bio-vano" data-reveal>
+        <div class="bio__head">
+          <div class="bio__photo">
+            <img src="assets/bio-vano.webp" width="720" height="960" loading="lazy" alt="Tomáš Vaňo">
+            </div>
+          <span class="bio__num">48</span>
+          <p class="bio__name"><span class="bio__fn">Tomáš</span><span class="bio__sn">Vaňo</span></p>
+        </div>
+        <div class="bio__body">
+          <div class="bio__text"><p>Viac ako 20 rokov som sa venoval rozvoju futbalu v Záblatí, kde sa nám z malého dedinského klubu podarilo vybudovať rešpektovanú organizáciu s desiatkami mladých talentov a skvelým zázemím. Popri tom je mojou srdcovkou dychová hudba Textilanka, v ktorej pôsobím ako spevák a prinášam ľuďom radosť z poctivej slovenskej muziky. Som hrdý otec a človek, pre ktorého sú skúsenosti, odhodlanie a práca pre ľudí na prvom mieste.</p></div>
+          <button class="bio__more" type="button">Viac</button>
+        </div>
+      </li>
+      <li class="bio" id="bio-zak" data-reveal>
+        <div class="bio__head">
+          <div class="bio__photo">
+            <img src="assets/bio-zak.webp" width="720" height="960" loading="lazy" alt="Patrik Žák">
+            </div>
+          <span class="bio__num">51</span>
+          <p class="bio__name"><span class="bio__fn">Patrik</span><span class="bio__sn">Žák</span></p>
+        </div>
+        <div class="bio__body">
+          <div class="bio__text"><p>Navštevoval som francúzske bilingválne Gymnázium Ľ. Štúra v Trenčíne a neskôr študoval na City University of Seattle. Pracoval som v rodinnej firme aj v medzinárodných spoločnostiach v IT. Od roku 2010 som poslancom za mestskú časť Juh a od roku 2017 zástupcom primátora. Venujem sa práci s ľuďmi a občianskymi združeniami, projektu Európske hlavné mesto kultúry, propagácii mesta a mobilite. Doma ma čakajú manželka, dve malé deti a kocúr.</p></div>
+          <button class="bio__more" type="button">Viac</button>
+        </div>
+      </li>
+    </ul>
+  </section>
+
+  </div><!-- /plocha -->
+
+  <!-- ---------- 9 NAJ Z NÁŠHO KRAJA ---------- -->
+  <section class="naj" aria-labelledby="naj-nadpis" data-reveal>
+    <h2 class="naj__title" id="naj-nadpis">9 naj<br>z nášho kraja</h2>
+    <div class="rail rail--naj" data-rail tabindex="0" aria-label="Tipy kandidátov, posúvateľné">
+      <div class="rail__cell">
+        <div class="naj__item" data-reveal>
+          <h3 class="naj__kto"><span class="naj__fn">Martin</span> <span class="naj__sn">BARČÁK</span></h3>
+          <p class="naj__p">Zlatovská aj Záblatská kyselka sú výborné miesta na príjemnú prechádzku, relax či opekačku. Červená trasa od kyselky vedie lesom na lúky nad Záblatím, kde nájdete parádnu hojdačku a krásny výhľad na celý Trenčín.</p>
+        </div>
+      </div>
+      <div class="rail__cell">
+        <div class="naj__item" data-reveal>
+          <h3 class="naj__kto"><span class="naj__fn">Martina</span> <span class="naj__sn">BEŇOVIČOVÁ</span></h3>
+          <p class="naj__p">Múzeum Príbeh štyroch obcí v Trenčianskych Stankovciach ukazuje históriu spojených dedín Rozvádz, Sedličná, Malé a Veľké Stankovce. Nájdete tu vzácne archeologické nálezy, tradičné kroje a krásne historické fotografie.</p>
+        </div>
+      </div>
+      <div class="rail__cell">
+        <div class="naj__item" data-reveal>
+          <h3 class="naj__kto"><span class="naj__fn">Ľubomír</span> <span class="naj__sn">HORNÝ</span></h3>
+          <p class="naj__p">Víkendové zápasy v Opatovej, Záblatí či Trenčianskej Turnej ponúkajú parádnu atmosféru. Príďte podporiť lokálne kluby, trénerov a decká, vyvetrať si hlavu, dať si dobré občerstvenie a zažiť čistú radosť zo športu.</p>
+        </div>
+      </div>
+      <div class="rail__cell">
+        <div class="naj__item" data-reveal>
+          <h3 class="naj__kto"><span class="naj__fn">Juraj</span> <span class="naj__sn">HÚSERKA</span></h3>
+          <p class="naj__p">Ranch 13 a Antonstál ponúkajú príjemnú kombináciu na rodinný výlet. Na Ranchi 13 si užijete kone a atmosféru divokého západu. Odtiaľ môžete pokračovať krásnou prírodou Bielych Karpát až k historickému kaštieľu Antonstál, kde si vychutnáte pokoj a čaro tohto výnimočného miesta.</p>
+        </div>
+      </div>
+      <div class="rail__cell">
+        <div class="naj__item" data-reveal>
+          <h3 class="naj__kto"><span class="naj__fn">Zuzana</span> <span class="naj__sn">MIŠÁKOVÁ</span></h3>
+          <p class="naj__p">Príďte sa zabaviť do KKC Hviezda v Trenčíne na čiernu komédiu Zázrak. Dej vás prenesie do Francúzska roku 1250 do chudobného kláštora. Čaká vás kolotoč bláznivých situácií, skvelého humoru a večer plný divadelnej energie.</p>
+        </div>
+      </div>
+      <div class="rail__cell">
+        <div class="naj__item" data-reveal>
+          <h3 class="naj__kto"><span class="naj__fn">Martin</span> <span class="naj__sn">SMOLKA</span></h3>
+          <p class="naj__p">Ak máte radi cyklistiku, medzinárodná cyklotrasa Trenčín – Nemšová – Brumov je pre vás stvorená. Celý úsek má hladký asfaltový povrch, je oddelený od premávky a vedie krásnou prírodou Považianky a Vlárskeho priesmyku.</p>
+        </div>
+      </div>
+      <div class="rail__cell">
+        <div class="naj__item" data-reveal>
+          <h3 class="naj__kto"><span class="naj__fn">Róbert</span> <span class="naj__sn">ŠVEHLA</span></h3>
+          <p class="naj__p">Zmodernizovaná historická sýpka v Moravskom Lieskovom ponúka tvorivé workshopy, lokálne trhy aj podujatia. Vychutnajte si skvelú kávu v kaviarni alebo si oddýchnite v slivkovom sade v srdci krásnej prírody.</p>
+        </div>
+      </div>
+      <div class="rail__cell">
+        <div class="naj__item" data-reveal>
+          <h3 class="naj__kto"><span class="naj__fn">Tomáš</span> <span class="naj__sn">VAŇO</span></h3>
+          <p class="naj__p">Kykula ponúka dokonalý únik do krásnej prírody Bielych Karpát. Čakajú vás tu hlboké lesy, nádherné výhľady na okolitú krajinu a božský pokoj. Ideálne miesto na načerpanie novej energie a oddych od mestského ruchu.</p>
+        </div>
+      </div>
+      <div class="rail__cell">
+        <div class="naj__item" data-reveal>
+          <h3 class="naj__kto"><span class="naj__fn">Patrik</span> <span class="naj__sn">ŽÁK</span></h3>
+          <p class="naj__p">Obnovený Župný dom v Trenčíne ožil vďaka projektu EHMK 2026. Zrekonštruovaná historická pamiatka prináša moderný priestor pre koncerty, výstavy aj komunitné stretnutia v srdci kraja. Spojenie histórie a kultúry nadchne každého.</p>
+        </div>
+      </div>
+    </div>
+    <div class="rail__nav">
+      <button class="rail__btn" type="button" data-dir="-1" aria-label="Predchádzajúci tip">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M15 4 7 12l8 8"/></svg>
+      </button>
+      <button class="rail__btn" type="button" data-dir="1" aria-label="Ďalší tip">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 4l8 8-8 8"/></svg>
+      </button>
+    </div>
   </section>
 
   <footer class="foot">
@@ -551,6 +1045,52 @@ body{
   /* Hrad zámerne nehýbe – preto nehýbe ani headline.
      Keby driftoval headline a hrad nie, veža by z medzery ušla. */
 
+  /* Carousel: posúva sa natívne, JS rieši len šípky a to, kedy sú neaktívne. */
+  document.querySelectorAll('[data-rail]').forEach(function(rail){
+    var nav = rail.parentNode.querySelector('.rail__nav');
+    if (!nav) return;
+    var btns = nav.querySelectorAll('.rail__btn');
+    function krok(){
+      var prva = rail.firstElementChild;
+      if (!prva) return rail.clientWidth;
+      var g = parseFloat(getComputedStyle(rail).columnGap) || 0;
+      return prva.getBoundingClientRect().width + g;
+    }
+    btns.forEach(function(b){
+      b.addEventListener('click', function(){
+        rail.scrollBy({ left: krok() * Number(b.dataset.dir), behavior:'smooth' });
+      });
+    });
+    function stav(){
+      var max = rail.scrollWidth - rail.clientWidth - 2;
+      btns[0].disabled = rail.scrollLeft <= 2;
+      btns[1].disabled = rail.scrollLeft >= max;
+    }
+    rail.addEventListener('scroll', stav, { passive:true });
+    addEventListener('resize', stav);
+    stav();
+  });
+
+  /* Priority: karta je tlačidlo, text sa vyroluje a šípka sa otočí nadol. */
+  document.querySelectorAll('.prio__btn').forEach(function(b){
+    b.addEventListener('click', function(){
+      var karta = b.closest('.prio__card');
+      var otvorene = karta.classList.toggle('is-open');
+      b.setAttribute('aria-expanded', otvorene ? 'true' : 'false');
+    });
+  });
+
+  /* Životopisy: zatvorené na štyri riadky, tlačidlo ich rozbalí. */
+  document.querySelectorAll('.bio__more').forEach(function(b){
+    var karta = b.closest('.bio');
+    b.setAttribute('aria-expanded','false');
+    b.addEventListener('click', function(){
+      var otvorene = karta.classList.toggle('is-open');
+      b.textContent = otvorene ? 'Menej' : 'Viac';
+      b.setAttribute('aria-expanded', otvorene ? 'true' : 'false');
+    });
+  });
+
   /* karty a deviati sa objavia, keď na ne prídeš */
   if (!matchMedia('(prefers-reduced-motion: reduce)').matches && 'IntersectionObserver' in window){
     var io = new IntersectionObserver(function(entries){
@@ -558,8 +1098,14 @@ body{
         if (e.isIntersecting){ e.target.classList.add('in'); io.unobserve(e.target); }
       });
     }, {rootMargin:'0px 0px -12% 0px'});
-    document.querySelectorAll('[data-reveal]').forEach(function(el, i){
-      el.style.setProperty('--d', (i % 4) * 80 + 'ms');
+    /* Oneskorenie sa počíta v rámci vlastnej mriežky, nie cez celú stránku –
+       každá sekcia tak nabehne po svojom, zľava doprava. */
+    document.querySelectorAll('[data-reveal]').forEach(function(el){
+      var sur = Array.prototype.filter.call(el.parentNode.children, function(c){
+        return c.hasAttribute && c.hasAttribute('data-reveal');
+      });
+      var i = sur.indexOf(el);
+      el.style.setProperty('--d', Math.min(i, 8) * 70 + 'ms');
       io.observe(el);
     });
   } else {
