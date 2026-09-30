@@ -71,7 +71,7 @@ body{
   background-image:url("assets/hrad-2400.webp");
 
   background-size:125% auto;
-  background-position:0% 27.6%;
+  background-position:0.8% -16.51cqw;
   background-repeat:no-repeat;
 }
 .hero__inner{
@@ -84,7 +84,7 @@ body{
 
   width:max(var(--measure), min(100%, 360px));
 
-  margin:0 auto -.596em;
+  margin:0 auto -.356em;
   position:relative; z-index:3;
   transform:translateY(-50%);
   background:var(--ink);
@@ -92,7 +92,7 @@ body{
   font-family:var(--display);
   font-weight:900;
 
-  font-size:max(2.49cqw, min(3.97cqw, 14.3px));
+  font-size:max(2.47cqw, min(3.94cqw, 14.17px));
   line-height:1;
   letter-spacing:0;
   text-transform:uppercase;
@@ -104,6 +104,16 @@ body{
 .topbar span{ display:flex; align-items:center; gap:.12em }
 .topbar span::after{ content:""; width:1em; height:max(1px,.045em); background:currentColor }
 .topbar span:last-child::after{ display:none }
+.topbar__prelepka{
+  position:relative; z-index:1;
+  background:var(--blue); color:var(--white);
+  font-size:1.28em; line-height:1;
+  padding:.152em .26em; margin-block:-.261em;
+  transform:rotate(-2deg);
+  box-shadow:0 .06em .16em rgba(0,0,0,.3);
+}
+.topbar__prelepka::after,
+.topbar span:has(+ .topbar__prelepka)::after{ display:none }
 
 .hero__gap{ flex:1 1 auto; height:6cqw }
 
@@ -143,44 +153,54 @@ body{
   }
 }
 
-.team{ position:relative; z-index:2;
+.team{ position:relative; z-index:2; container-type:inline-size;
        width:min(1104px, calc(100% - 2*var(--vlozenie))); margin-inline:auto }
 
 .team__list{
 
   list-style:none; width:100%; margin:-6.25% 0 0;
-  padding:var(--s4) 6.8%;
+  padding:var(--s4) 5%;
   background:var(--white); border-radius:clamp(10px,1.3vw,18px);
   display:flex; justify-content:space-between; align-items:flex-start; gap:var(--s3);
   position:relative;
 }
 .team__item{ text-align:left; display:flex; flex-direction:column; align-items:flex-start; gap:var(--s2) }
 
+.team__item{ position:relative; left:calc(var(--posun, 0) * 1cqw) }
+.team__item:nth-child(1){ --posun:0.437 }
+.team__item:nth-child(2){ --posun:-1.569 }
+.team__item:nth-child(3){ --posun:-1.992 }
+.team__item:nth-child(4){ --posun:-0.996 }
+.team__item:nth-child(5){ --posun:-2.865 }
+.team__item:nth-child(6){ --posun:-5.166 }
+.team__item:nth-child(7){ --posun:-5.253 }
+.team__item:nth-child(8){ --posun:-2.337 }
+.team__item:nth-child(9){ --posun:-0.275 }
 .team__num{
-  font-family:var(--display); font-weight:900; font-size:clamp(14px,1.8vw,25px);
+  font-family:var(--display); font-weight:900; font-size:2.88cqw;
   line-height:1; color:var(--white); background:var(--orange);
-  border-radius:6px; width:1.52em; aspect-ratio:1;
+  border-radius:6px; width:1.18em; aspect-ratio:1;
   display:grid; place-items:center; padding:0 0 .06em;
 }
 .team__name{ line-height:1.05 }
 .team__fn{
   display:block; font-family:var(--display); font-weight:700;
-  font-size:clamp(12px,1.26vw,18px); color:var(--ink); letter-spacing:.01em;
+  font-size:2.5cqw; color:var(--ink); letter-spacing:.01em;
 }
 .team__sn{
   display:block; font-family:var(--display); font-weight:900;
-  font-size:clamp(12px,1.26vw,18px); color:var(--orange);
+  font-size:2.5cqw; color:var(--orange);
   text-transform:uppercase; letter-spacing:-.01em;
 }
 
 @media (max-width:1150px){
-  .team{ container-type:inline-size }
   .team__fn, .team__sn{ white-space:nowrap }
 }
 
 @media (max-width:660px){
   .team__fn, .team__sn{ font-size:clamp(7px, 2.75vw, 12px) }
-  .team__num{ font-size:clamp(9px, 2.6vw, 14px) }
+  .team__num{ font-size:clamp(9px, 2.6vw, 14px); width:1.52em }
+  .team__item{ left:0 }
   .team__list{ padding:var(--s3) 5.1%; gap:var(--s1) }
   .team__item{ gap:var(--s1) }
 }
@@ -189,17 +209,16 @@ body{
 
 .say{
   position:relative; background:var(--white); border-radius:var(--s6);
-  padding:var(--s5) var(--s5) var(--s5) 46%;
+  padding:var(--s5) var(--s5) var(--s5) 48%;
   min-height:19cqw;
   display:flex; align-items:center;
-  scroll-margin-top:var(--s5);
+  scroll-margin-top:var(--s5); overflow:hidden;
 }
-.say--right{ padding:var(--s5) 46% var(--s5) var(--s5) }
+.say--right{ padding:var(--s5) 48% var(--s5) var(--s5) }
 
-.say__photo{ position:absolute; bottom:0; left:2.5%; height:86%; width:auto;
-             max-width:42%; overflow:hidden; border-radius:var(--s5) }
-.say--right .say__photo{ left:auto; right:2.5% }
-.say__photo img{ display:block; height:100%; width:auto }
+.say__photo{ position:absolute; top:0; bottom:0; left:0; width:44%; overflow:hidden }
+.say--right .say__photo{ left:auto; right:0 }
+.say__photo img{ display:block; width:100%; height:100%; object-fit:cover; object-position:50% 0% }
 
 .say__body{ position:relative; width:100% }
 
@@ -250,9 +269,8 @@ body{
 
   .say__quote{ grid-area:citat; text-align:left }
 
-  .say__photo{ grid-area:fotka; position:static; width:100%; height:auto; max-width:none;
-               margin:0 0 0 calc(-1 * var(--s3));
-               border-radius:0; overflow:visible }
+  .say__photo{ grid-area:fotka; position:static; width:calc(100% + var(--s5)); height:auto;
+               margin:0 0 0 calc(-1 * var(--s5)); overflow:visible }
   .say__photo img{ width:100%; height:auto }
   .say--right .say__photo{ left:auto; right:auto }
 
@@ -288,10 +306,6 @@ body{
 }
 .foot__link:focus-visible{ outline:3px solid var(--ink); outline-offset:2px; border-radius:4px }
 @media (hover:hover){ .foot__link:hover{ text-decoration-thickness:2px } }
-
-@media (min-width:701px) and (max-width:1150px){
-  .hero__bg{ background-position:0% 33.8% }
-}
 
 @media (max-width:700px){
   .frame{ padding:12px }
@@ -497,7 +511,7 @@ body{
     <nav class="topbar">
         <span>Voľby do VÚC</span>
         <span>24. október 2026</span>
-        <span>Nezávislí kandidáti</span>
+        <span class="topbar__prelepka">Nezávislí kandidáti</span>
       <span>Okres Trenčín</span>
     </nav>
 
@@ -562,7 +576,7 @@ body{
       <div class="rail__cell">
         <article class="say" id="huserka" data-reveal>
           <div class="say__photo">
-            <img src="assets/huserka.webp" width="700" height="875" loading="lazy" alt="Juraj Húserka">
+            <img src="assets/huserka.webp" width="720" height="847" loading="lazy" alt="Juraj Húserka">
           </div>
           <div class="say__body">
             <span class="say__mark say__mark--a" aria-hidden="true">&rdquo;</span>
@@ -575,7 +589,7 @@ body{
       <div class="rail__cell">
         <article class="say say--right" id="benovicova" data-reveal>
           <div class="say__photo">
-            <img src="assets/benovicova.webp" width="700" height="875" loading="lazy" alt="Martina Beňovičová">
+            <img src="assets/benovicova.webp" width="720" height="847" loading="lazy" alt="Martina Beňovičová">
           </div>
           <div class="say__body">
             <span class="say__mark say__mark--a" aria-hidden="true">&rdquo;</span>
@@ -588,7 +602,7 @@ body{
       <div class="rail__cell">
         <article class="say" id="misakova" data-reveal>
           <div class="say__photo">
-            <img src="assets/misakova.webp" width="700" height="875" loading="lazy" alt="Zuzana Mišáková">
+            <img src="assets/misakova.webp" width="720" height="847" loading="lazy" alt="Zuzana Mišáková">
           </div>
           <div class="say__body">
             <span class="say__mark say__mark--a" aria-hidden="true">&rdquo;</span>
@@ -601,7 +615,7 @@ body{
       <div class="rail__cell">
         <article class="say say--right" id="vano" data-reveal>
           <div class="say__photo">
-            <img src="assets/vano.webp" width="700" height="875" loading="lazy" alt="Tomáš Vaňo">
+            <img src="assets/vano.webp" width="720" height="847" loading="lazy" alt="Tomáš Vaňo">
           </div>
           <div class="say__body">
             <span class="say__mark say__mark--a" aria-hidden="true">&rdquo;</span>
@@ -634,7 +648,7 @@ body{
           <span class="prio__t">Bezpečné a hladké cesty do práce aj domov</span>
         </button>
         <div class="prio__panel" id="prio-1">
-          <div class="prio__panel-in"><p class="prio__p">Dieram na cestách a zničeným nápravám na autách musí byť koniec. Naše krajské cesty II. a III. triedy spájajú vaše domovy s prácou a školami. Presadzujeme systematickú opravu cestnej siete, modernizáciu mostov a rýchlu zimnú údržbu.</p></div>
+          <div class="prio__panel-in"><p class="prio__p">Dieram na cestách a zničeným nápravám na autách musí byť koniec. Naše krajské cesty II. a III. triedy spájajú vaše domovy s prácou a školami. Presadzujeme systematické opravy cestnej siete, modernizáciu mostov a rýchlu zimnú údržbu.</p></div>
         </div>
       </li>
       <li class="prio__card" data-reveal>
@@ -643,7 +657,7 @@ body{
           <span class="prio__t">Spoj, na ktorý sa dá vždy spoľahnúť</span>
         </button>
         <div class="prio__panel" id="prio-2">
-          <div class="prio__panel-in"><p class="prio__p">Nemôže sa stať, že sa nedostanete do práce alebo dieťa z krúžku domov len preto, že neide žiadny autobus. Budeme presadzovať moderné, klimatizované autobusy, nízke ceny lístkov pre študentov a seniorov a nadväznosť spojov tak, aby ste nemuseli čakať desiatky minút na prestupoch.</p></div>
+          <div class="prio__panel-in"><p class="prio__p">Nemôže sa stať, že sa nedostanete do práce alebo dieťa z krúžku domov len preto, že nejde žiadny autobus. Budeme presadzovať moderné, klimatizované autobusy, nízke ceny lístkov pre študentov a seniorov a nadväznosť spojov tak, aby ste nemuseli čakať desiatky minút na prestupoch.</p></div>
         </div>
       </li>
       <li class="prio__card" data-reveal>
@@ -652,7 +666,7 @@ body{
           <span class="prio__t">Dostupná zdravotná starostlivosť</span>
         </button>
         <div class="prio__panel" id="prio-3">
-          <div class="prio__panel-in"><p class="prio__p">Strach o zdravie blízkych je to najhoršie, čo človek zažíva. Budeme tlačiť na to, aby vo vašich mestách a obciach nebol problém nájsť obvodného lekára, tak, ako sa to podarilo Jurajovi Húserkovi v Hornom Srní.</p></div>
+          <div class="prio__panel-in"><p class="prio__p">Strach o zdravie blízkych je to najhoršie, čo človek zažíva. Budeme tlačiť na to, aby vo vašich mestách a obciach nebol problém nájsť lekára, tak, ako sa to podarilo starostovi Jurajovi Húserkovi v Hornom Srní.</p></div>
         </div>
       </li>
       <li class="prio__card" data-reveal>
@@ -670,7 +684,7 @@ body{
           <span class="prio__t">Dôstojná a ľudská starostlivosť o našich seniorov</span>
         </button>
         <div class="prio__panel" id="prio-5">
-          <div class="prio__panel-in"><p class="prio__p">Naši rodičia a starí rodičia budovali tento región a zaslúžia si úctu a špičkovú starostlivosť. Budeme presadzovať dostatok miest v domovoch sociálnych služieb, skracovanie čakacích lehôt a priamu finančnú podporu pre rodiny, ktoré sa o svojich príbuzných starajú doma.</p></div>
+          <div class="prio__panel-in"><p class="prio__p">Naši rodičia a starí rodičia budovali tento región a zaslúžia si úctu a špičkovú starostlivosť. Budeme presadzovať dostatok miest v domovoch sociálnych služieb a skracovanie čakacích lehôt.</p></div>
         </div>
       </li>
       <li class="prio__card" data-reveal>
@@ -777,7 +791,7 @@ body{
           <p class="bio__name"><span class="bio__fn">Zuzana</span><span class="bio__sn">Mišáková</span></p>
         </div>
         <div class="bio__body">
-          <div class="bio__text"><p>Pracujem ako riaditeľka Mestského divadla Trenčín, venujem sa aj vzdelávaniu, zlepšovaniu života komunít a charite. Chcem rozvíjať školskú, kultúrnu a športovú infraštruktúru, dostupnosť ihrísk a relaxačných zón, starostlivosť o deti, ako aj ľudský potenciál. Dôležité je pre mňa zdravé životné prostredie, čo nie je len zeleň, ale aj eliminácia sociálno-patologických javov. Politika potrebuje kultúrny prístup, nie nenávisť. Mojím krédom je spájať.</p></div>
+          <div class="bio__text"><p>Pracujem ako riaditeľka Mestského divadla Trenčín, venujem sa aj vzdelávaniu, zlepšovaniu života komunít a charite. Chcem rozvíjať školskú, kultúrnu a športovú infraštruktúru, dostupnosť ihrísk a relaxačných zón, starostlivosť o deti, ako aj ľudský potenciál kraja vo všetkých pracovných sférach a generáciách. Politika potrebuje kultúrny prístup, nie nenávisť. Mojím krédom je spájať: ľudí, komunity, ale aj miesta. Najväčšou inšpiráciou v mojom živote aj v práci je Trenčín a jeho okolie a ľudia.</p></div>
           <button class="bio__more" type="button">Viac</button>
         </div>
       </li>
@@ -790,7 +804,7 @@ body{
           <p class="bio__name"><span class="bio__fn">Martin</span><span class="bio__sn">Smolka</span></p>
         </div>
         <div class="bio__body">
-          <div class="bio__text"><p>Viac ako 30 rokov pracujem v oblasti bezpečnosti a športu a týmto témam sa chcem venovať aj naďalej. Som predsedom komisie športu pri mestskom zastupiteľstve v Trenčíne a mám ambíciu ešte viac podporovať šport v kraji a modernizovať športovú infraštruktúru tak, ako sa nám darilo aj po minulé roky.</p></div>
+          <div class="bio__text"><p>Viac ako 30 rokov pracujem v oblasti bezpečnosti a športu a týmto témam sa chcem venovať aj naďalej. Od roku 2014 som poslancom mestského zastupiteľstva v Trenčíne, kde som zároveň predsedom komisie športu. Mám ambíciu ešte viac podporovať šport v kraji a modernizovať športovú infraštruktúru tak, ako sa nám darilo aj po minulé roky.</p></div>
           <button class="bio__more" type="button">Viac</button>
         </div>
       </li>
@@ -868,7 +882,7 @@ body{
       <div class="rail__cell">
         <div class="naj__item" data-reveal>
           <h3 class="naj__kto"><span class="naj__fn">Zuzana</span> <span class="naj__sn">MIŠÁKOVÁ</span></h3>
-          <p class="naj__p">Príďte sa zabaviť do KKC Hviezda v Trenčíne na čiernu komédiu Zázrak. Dej vás prenesie do Francúzska roku 1250 do chudobného kláštora. Čaká vás kolotoč bláznivých situácií, skvelého humoru a večer plný divadelnej energie.</p>
+          <p class="naj__p">Príďte do KKC Hviezda v Trenčíne na rodinný muzikál Perinbaba alebo hitmuzikál Popoluška. Zažite tam Noc divadiel s bláznivou čiernou komédiou Zázrak a deti vtedy vezmite na Čin-čin podľa Ľudmily Podjavorinskej a tvorivé dielničky. Duchovnú posilu nájdete na Krížovej ceste na Malej Skalke, odporúčam prejsť celú cestu až ku kláštoru na Veľkú Skalku.</p>
         </div>
       </div>
       <div class="rail__cell">
